@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../xsl/main.xsl"?>
+<section id="element_book_parents">
+    <title>Related elements</title>
+    <para>Related elements: 
+        <simplelist type='inline'>
+            <member><link linkend="element_appendix">appendix</link></member>
+            <member><link linkend="element_article">article</link></member>
+            <member><link linkend="element_chapter">chapter</link></member>
+            <member><link linkend="element_set">set</link></member>
+        </simplelist>
+    </para>
+</section>

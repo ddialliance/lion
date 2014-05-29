@@ -1,0 +1,10 @@
+name = Helper module for DDI import
+description = Imports DDI Objects from a Excel (xls) file
+package = XMI
+dependencies[] = entity
+dependencies[] = entityreference
+dependencies[] = field_collection
+version = VERSION
+core = 7.x
+
+configure = admin/config/system/ddi_model_import

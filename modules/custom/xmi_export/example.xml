@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+    <xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
+    <uml:Model xmi:type="uml:Model" name="EA_Model" visibility="public">
+        <packagedElement xmi:type="uml:Package" xmi:id="package_id" name="Class Model" visibility="public">
+		    
+            <!-- SuperClass -->
+            <packagedElement xmi:type="uml:Class" xmi:id="SuperClass" name="SuperClass" visibility="public">
+                <ownedAttribute xmi:type="uml:Property" xmi:id="EAID_dst482F98_4790_4130_BBDB_DBAD35FF552D" visibility="public" association="EAID_4D482F98_4790_4130_BBDB_DBAD35FF552D" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+                    <type xmi:idref="AssociatedClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000011__4790_4130_BBDB_DBAD35FF552D" value="1"/>
+                    <upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000012__4790_4130_BBDB_DBAD35FF552D" value="1"/>
+                </ownedAttribute>
+            </packagedElement>
+			
+            <!-- SubClass -->
+            <packagedElement xmi:type="uml:Class" xmi:id="SubClass" name="SubClass" visibility="public">
+                <generalization xmi:type="uml:Generalization" xmi:id="EAID_7065B69D_BDEA_4494_88DD_CDC5626B997B" general="SuperClass"/>
+            </packagedElement>
+			
+            <!-- CompositionClass -->
+            <packagedElement xmi:type="uml:Class" xmi:id="CompositionClass" name="CompositionClass" visibility="public">
+                <ownedAttribute xmi:type="uml:Property" xmi:id="EAID_dst907A4A_65D5_4e11_8A01_3EB11599F835" visibility="public" association="Composition" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+                    <type xmi:idref="SubClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000005__65D5_4e11_8A01_3EB11599F835" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000006__65D5_4e11_8A01_3EB11599F835" value="-1"/>
+                </ownedAttribute>
+            </packagedElement>
+			
+            <!-- Composition -->
+            <packagedElement xmi:type="uml:Association" xmi:id="Composition" name="Composition" visibility="public">
+                <memberEnd xmi:idref="EAID_dst907A4A_65D5_4e11_8A01_3EB11599F835"/>
+                <memberEnd xmi:idref="EAID_src907A4A_65D5_4e11_8A01_3EB11599F835"/>
+                <ownedEnd xmi:type="uml:Property" xmi:id="EAID_src907A4A_65D5_4e11_8A01_3EB11599F835" visibility="public" association="Composition" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="composite">
+                    <type xmi:idref="CompositionClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000009__65D5_4e11_8A01_3EB11599F835" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000010__65D5_4e11_8A01_3EB11599F835" value="-1"/>
+                </ownedEnd>
+            </packagedElement>
+			
+            <!-- AggregatedClass -->
+            <packagedElement xmi:type="uml:Class" xmi:id="AggregatedClass" name="AggregatedClass" visibility="public">
+                <ownedAttribute xmi:type="uml:Property" xmi:id="EAID_dst18A410_05AA_42ec_917A_1DF2C1118423" visibility="public" association="EAID_1C18A410_05AA_42ec_917A_1DF2C1118423" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+                    <type xmi:idref="SubClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000001__05AA_42ec_917A_1DF2C1118423" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000002__05AA_42ec_917A_1DF2C1118423" value="-1"/>
+                </ownedAttribute>
+            </packagedElement>
+			
+            <!-- Aggregation -->
+            <packagedElement xmi:type="uml:Association" xmi:id="EAID_1C18A410_05AA_42ec_917A_1DF2C1118423" name="Aggregation" visibility="public">
+                <memberEnd xmi:idref="EAID_dst18A410_05AA_42ec_917A_1DF2C1118423"/>
+                <memberEnd xmi:idref="EAID_src18A410_05AA_42ec_917A_1DF2C1118423"/>
+                <ownedEnd xmi:type="uml:Property" xmi:id="EAID_src18A410_05AA_42ec_917A_1DF2C1118423" visibility="public" association="EAID_1C18A410_05AA_42ec_917A_1DF2C1118423" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+                    <type xmi:idref="AggregatedClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000007__05AA_42ec_917A_1DF2C1118423" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000008__05AA_42ec_917A_1DF2C1118423" value="-1"/>
+                </ownedEnd>
+            </packagedElement>
+						
+
+
+			
+			
+			
+            <!-- AssociatedClass -->
+            <packagedElement xmi:type="uml:Class" xmi:id="AssociatedClass" name="AssociatedClass" visibility="public"/>
+            
+            <!-- Association -->
+            <packagedElement xmi:type="uml:Association" xmi:id="EAID_4D482F98_4790_4130_BBDB_DBAD35FF552D" name="Association" visibility="public">
+                <memberEnd xmi:idref="EAID_dst482F98_4790_4130_BBDB_DBAD35FF552D"/>
+                <memberEnd xmi:idref="EAID_src482F98_4790_4130_BBDB_DBAD35FF552D"/>
+                <ownedEnd xmi:type="uml:Property" xmi:id="EAID_src482F98_4790_4130_BBDB_DBAD35FF552D" visibility="public" association="EAID_4D482F98_4790_4130_BBDB_DBAD35FF552D" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+                    <type xmi:idref="SuperClass"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000003__4790_4130_BBDB_DBAD35FF552D" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000004__4790_4130_BBDB_DBAD35FF552D" value="-1"/>
+                </ownedEnd>
+            </packagedElement>			
+
+        </packagedElement>
+    </uml:Model>
+</xmi:XMI>

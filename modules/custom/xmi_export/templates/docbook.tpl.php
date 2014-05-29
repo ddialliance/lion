@@ -1,0 +1,95 @@
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title>DDI Moving Forward: Object Description</title>
+        <author>
+            <orgname>the Data Documentation Initiative</orgname>
+        </author>
+    </info>
+
+    <?php foreach($objects as $package=>$ddiobjects): ?>
+        <part xml:id="<?php print $package;?>">
+            <title><?php print $package;?></title>
+            <?php foreach($ddiobjects as $object):?>
+            <chapter xml:id="<?php print $object['name']; ?>">
+                <title><?php print $object['name']; ?></title>
+                <?php if($object['extends']):?>
+                <section  revision="" role="extends">
+                    <title>Extends</title>
+                    <para>This object extends <link linkend="<?php print $object['extends']; ?>"><?php print $object['extends']; ?></link></para>
+                </section>
+                <?php endif;?>
+                <section xml:id="<?php print $object['name']; ?>-definition"  revision="" role="definition">
+                    <title>Definition</title>
+                    <para>
+                        <?php if(array_key_exists('definition',$object)){print $object['definition'];} ?>
+                    </para>
+                </section>
+                <?php if(count($object['properties']) > 0): ?>
+                <section xml:id="<?php print $object['name']; ?>-properties" revision="" role="properties">
+                    <title>Properties</title>
+                    <table label="<?php print $object['name']; ?>">    
+                        <title>list of properties</title>
+                        <tgroup cols="2">
+                            <thead>
+                                <row>
+                                    <entry>Name</entry>
+                                    <entry>Datatype</entry>
+                                    <entry>Description</entry>
+                                    <entry>Cardinality</entry>
+                                </row>
+                            </thead>
+                            <tbody>
+                                <?php foreach($object['properties'] as $item):?>
+                                <row xml:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
+                                    <entry role="name"><?php print $item['name']; ?></entry>
+                                    <entry role="datatype"><?php if(array_key_exists('datatype',$item)){print $item['datatype'];} ?></entry>
+                                    <entry role="description"><?php if(array_key_exists('description',$item)){print $item['description'];} ?></entry>
+                                    <entry role="cardinality"><?php if(array_key_exists('datatype',$item)){print $item['cardinality'];} ?></entry>
+                                </row>
+                                <?php endforeach;?>
+                            </tbody>
+                        </tgroup>
+                    </table>
+                </section>
+                <?php endif;?>
+                <?php if(count($object['relationships']) > 0): ?>
+                <section xml:id="<?php print $object['name']; ?>-relationships" revision="" role="relationships">
+                    <title>Relationships</title>
+                    <table label="<?php print $object['name']; ?>">
+                        <title>list of relationships</title>
+                        <tgroup cols="2">
+                            <thead>
+                                <row>
+                                    <entry>Name</entry>
+                                    <entry>Target</entry>
+                                    <entry>Description</entry>
+                                    <entry>Type</entry>
+                                    <entry>Source cardinality</entry>
+                                    <entry>Target cardinality</entry>
+                                </row>
+                            </thead>
+                            <tbody>
+                                <?php foreach($object['relationships'] as $item):?>
+                                <row>
+                                    <entry><?php print $item['name'];?></entry>
+                                    <?php if($item['target_object']):?>
+                                    <entry><link linkend="<?php print $item['target_object'];?>"><?php print $item['target_object'];?></link></entry>
+                                    <?php else: ?>
+                                    <entry>NOT DEFINED</entry>
+                                    <?php endif;?>
+                                    <entry><?php print $item['description'];?></entry>
+                                    <entry><?php print $item['type'];?></entry>
+                                    <entry><?php print $item['source_cardinality'];?></entry>
+                                    <entry><?php print $item['target_cardinality'];?></entry>
+                                </row>
+                                <?php endforeach;?>
+                            </tbody>
+                        </tgroup>
+                    </table>
+                </section>
+                <?php endif; ?>
+            </chapter>
+            <?php endforeach; ?>
+            </part>
+        <?php endforeach; ?>
+</book>

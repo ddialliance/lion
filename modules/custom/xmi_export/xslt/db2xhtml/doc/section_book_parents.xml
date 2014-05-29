@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../xsl/main.xsl"?>
+<section id="element_book_parents">
+    <title>Parents containing book</title>
+    <para>These elements can contain <sgmltag>book</sgmltag>:
+        <simplelist type='inline'>
+            <member><link linkend="element_set">set</link></member>
+        </simplelist>
+    </para>
+</section>

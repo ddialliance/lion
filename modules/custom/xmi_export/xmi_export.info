@@ -1,0 +1,7 @@
+name = XMI Export for DDI
+description = Exports XMI xml from nodetyped defining DDI Objects
+package = XMI
+version = VERSION
+core = 7.x
+
+configure = admin/config/system/xmi_export
