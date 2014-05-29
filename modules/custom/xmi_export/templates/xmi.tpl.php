@@ -15,7 +15,7 @@
                             <?php foreach ($object['properties'] as $item): ?>
                                 <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $item['name']; ?>" visibility="public">
                                     <?php if (array_key_exists('datatype', $item)): ?>
-                                        <type xmi:type="<?php print _render_datatype($item['datatype']); ?>"/>
+                                        <?php print _render_datatype($item['datatype']); ?>
                                     <?php endif; ?>
                                     <?php if (array_key_exists('cardinality', $item)): ?>
                                         <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $item['name'], 'cardinality' => $item['cardinality'])); ?>

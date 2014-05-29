@@ -198,6 +198,11 @@ function _get_reference_title($field){
     return $result;
 }
 
+/**
+ * Helper function for render a datatype
+ * @param type $type
+ * @return string
+ */
 function _render_datatype($type){
     $output = '<type xmi:type="'.$type.'"/>';
     
