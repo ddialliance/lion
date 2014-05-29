@@ -40,7 +40,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach($object['properties'] as $item):?>
-                                <row xml:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
+                                <row>
                                     <entry role="name"><?php print $item['name']; ?></entry>
                                     <entry role="datatype"><?php if(array_key_exists('datatype',$item)){print $item['datatype'];} ?></entry>
                                     <entry role="description"><?php if(array_key_exists('description',$item)){print $item['description'];} ?></entry>
