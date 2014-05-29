@@ -81,6 +81,7 @@ function xmi_export_xmi($package = null) {
     }    
     
     header("Content-type: text/xml; charset=utf-8");
+    
     print theme('xmi', array('objects' => $objects));
     exit(0);
 }
@@ -195,4 +196,28 @@ function _get_reference_title($field){
         $result = db_query("SELECT n.title  FROM {node} n  WHERE n.nid = :nid", array(':nid' => $nid))->fetchField();
     }
     return $result;
+}
+
+function _render_datatype($type){
+    $output = '<type xmi:type="'.$type.'"/>';
+    
+    if(strstr('xs:')){
+        switch($type){
+            case 'xs:string':
+            case 'xs:boolean':
+            case 'xs:integer':
+                $parts = explode(':', $type);
+                $uctype = ucfirst ($parts[1]);
+                $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#'.$uctype.'"/>';
+                break;
+            case 'xs:double':
+            case 'xs:float':
+                $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
+                break;
+            default:
+                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"/>';
+        }
+    }
+    
+    return $output;
 }
