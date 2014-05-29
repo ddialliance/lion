@@ -85,6 +85,11 @@ function xmi_export_xmi($package = null) {
     exit(0);
 }
 
+/**
+ * Restreucture the list to an nested array of packages
+ * @param type $objects
+ * @return type
+ */
 function _put_into_packages($objects){
     $result = array();
     foreach($objects as $object){
@@ -93,6 +98,12 @@ function _put_into_packages($objects){
     return $result;
 }
 
+/**
+ * Pulls fields from a drupal node and creates an array of fields used
+ * in the export
+ * @param type $node
+ * @return type
+ */
 function node_to_xmi_array($node) {
     $xmi = array('defenition', 
                  'name', 
@@ -160,6 +171,11 @@ function node_to_xmi_array($node) {
     return $xmi;
 }
 
+/**
+ * Helper function to get value from a field array
+ * @param type $field
+ * @return string
+ */
 function _get_value($field){
     if (array_key_exists('und', $field)) {
         return $field['und'][0]['value'];
@@ -167,7 +183,11 @@ function _get_value($field){
         return '';
     }
 }
-
+/**
+ * Helper function to get the title of the node from a reference field
+ * @param type $field
+ * @return type
+ */
 function _get_reference_title($field){
     $result = '';
     if (array_key_exists('und', $field)) {
