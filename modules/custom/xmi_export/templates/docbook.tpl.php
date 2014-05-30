@@ -7,7 +7,7 @@
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
-        <part xml:id="ddi4-<?php print $package;?>">
+    <part xml:id="ddi4-<?php print str_replace(' ', '',$package);?>">
             <title><?php print $package;?></title>
             <?php foreach($ddiobjects as $object):?>
             <chapter xml:id="ddi4-<?php print $object['uuid']; ?>">
