@@ -121,6 +121,7 @@ function node_to_xmi_array($node) {
     
     $xmi['extends'] = _get_reference_title($node->field_extends);  
     $xmi['package'] = _get_reference_title($node->field_package);
+    $xmi['uuid'] = $node->uuid;
     
     if (property_exists($node, 'PROPERTIES')) {
         if ($node->PROPERTIES) {

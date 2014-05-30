@@ -7,10 +7,10 @@
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
-        <part xml:id="<?php print $package;?>">
+        <part xml:id="ddi4-<?php print $package;?>">
             <title><?php print $package;?></title>
             <?php foreach($ddiobjects as $object):?>
-            <chapter xml:id="<?php print $object['name']; ?>">
+            <chapter xml:id="ddi4-<?php print $object['uuid']; ?>">
                 <title><?php print $object['name']; ?></title>
                 <?php if($object['extends']):?>
                 <section  revision="" role="extends">
@@ -18,14 +18,14 @@
                     <para>This object extends <link linkend="<?php print $object['extends']; ?>"><?php print $object['extends']; ?></link></para>
                 </section>
                 <?php endif;?>
-                <section xml:id="<?php print $object['name']; ?>-definition"  revision="" role="definition">
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
                     <title>Definition</title>
                     <para>
                         <?php if(array_key_exists('definition',$object)){print $object['definition'];} ?>
                     </para>
                 </section>
                 <?php if(count($object['properties']) > 0): ?>
-                <section xml:id="<?php print $object['name']; ?>-properties" revision="" role="properties">
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
                     <title>Properties</title>
                     <table label="<?php print $object['name']; ?>">    
                         <title>list of properties</title>
@@ -53,7 +53,7 @@
                 </section>
                 <?php endif;?>
                 <?php if(count($object['relationships']) > 0): ?>
-                <section xml:id="<?php print $object['name']; ?>-relationships" revision="" role="relationships">
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-relationships" revision="" role="relationships">
                     <title>Relationships</title>
                     <table label="<?php print $object['name']; ?>">
                         <title>list of relationships</title>

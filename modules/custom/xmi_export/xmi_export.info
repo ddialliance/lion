@@ -1,6 +1,10 @@
 name = XMI Export for DDI
 description = Exports XMI xml from nodetyped defining DDI Objects
 package = XMI
+dependencies[] = entity
+dependencies[] = entityreference
+dependencies[] = field_collection
+dependencies[] = uuid
 version = VERSION
 core = 7.x
 
