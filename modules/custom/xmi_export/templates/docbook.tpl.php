@@ -15,7 +15,7 @@
                 <?php if($object['extends']):?>
                 <section  revision="" role="extends">
                     <title>Extends</title>
-                    <para>This object extends <link linkend="<?php print $object['extends']; ?>"><?php print $object['extends']; ?></link></para>
+                    <para>This object extends <link linkend="ddi4-<?php print $object['extends_uuid']; ?>"><?php print $object['extends']; ?></link></para>
                 </section>
                 <?php endif;?>
                 <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
@@ -73,7 +73,7 @@
                                 <row>
                                     <entry><?php print $item['name'];?></entry>
                                     <?php if($item['target_object']):?>
-                                    <entry><link linkend="<?php print $item['target_object'];?>"><?php print $item['target_object'];?></link></entry>
+                                    <entry><link linkend="ddi4-<?php print $item['target_object_uuid'];?>"><?php print $item['target_object'];?></link></entry>
                                     <?php else: ?>
                                     <entry>NOT DEFINED</entry>
                                     <?php endif;?>

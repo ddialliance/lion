@@ -119,7 +119,11 @@ function node_to_xmi_array($node) {
     $xmi['is_abstract'] = _get_value($node->field_is_abstract);
     $xmi['definition']  = _get_value($node->body);
     
-    $xmi['extends'] = _get_reference_title($node->field_extends);  
+    $extends_info = _get_reference_info($node->field_extends);
+    
+    $xmi['extends'] = $extends_info['title'];
+    $xmi['extends_uuid'] = $extends_info['uuid'];
+    
     $xmi['package'] = _get_reference_title($node->field_package);
     $xmi['uuid'] = $node->uuid;
     
@@ -134,7 +138,9 @@ function node_to_xmi_array($node) {
                     $property['description']    = _get_value($prop->field_property_description_long);
                     $property['cardinality']    = _get_value($prop->field_property_cardinality);
 
-                    $property['datatype']       = _get_reference_title($prop->field_property_datatype);
+                    $datatype_info = _get_reference_info($prop->field_property_datatype);
+                    $property['datatype']       = $datatype_info['title'];
+                    $property['datatype_uuid']       = $datatype_info['uuid'];
 
                     $xmi['properties'][$property['name']] = $property;
                 
@@ -168,7 +174,11 @@ function node_to_xmi_array($node) {
             
             $relationship['description']        = _get_value($rel->field_relationship_description_l);
             
-            $relationship['target_object'] = _get_reference_title($rel->field_relationship_target_object);
+            $target_object_info = _get_reference_info($rel->field_relationship_target_object);
+            
+            $relationship['target_object'] = $target_object_info['title'];
+            $relationship['target_object_uuid'] = $target_object_info['uuid'];
+            
             $xmi['relationships'][$relationship['name']] = $relationship;
         }
     }
@@ -200,6 +210,16 @@ function _get_reference_title($field){
         $result = db_query("SELECT n.title  FROM {node} n  WHERE n.nid = :nid", array(':nid' => $nid))->fetchField();
     }
     return $result;
+}
+
+function _get_reference_info($field){
+    $fields = array('title' => '', 'uuid'=> '');
+    if (array_key_exists('und', $field)) {
+        $nid = $field['und'][0]['target_id'];
+        $result = db_query("SELECT n.title, n.uuid  FROM {node} n  WHERE n.nid = :nid", array(':nid' => $nid));
+        $fields = $result->fetchAssoc();
+    }
+    return $fields;
 }
 
 /**
