@@ -15,7 +15,11 @@
                 <?php if($object['extends']):?>
                 <section  revision="" role="extends">
                     <title>Extends</title>
+                    <?php if(substr($object['extends'], 0, 3 ) === "xs:"):?>
+                    <para>This object extends <?php print $object['extends']; ?></para>
+                    <?php else: ?>
                     <para>This object extends <link linkend="ddi4-<?php print $object['extends_uuid']; ?>"><?php print $object['extends']; ?></link></para>
+                    <?php endif;?>
                 </section>
                 <?php endif;?>
                 <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
