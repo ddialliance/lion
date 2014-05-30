@@ -84,8 +84,13 @@
         
         <diagrams>
             <!-- TODO: Generate one graph for each package -->
+            <?php $i = 1; ?>
             <?php foreach ($objects as $package => $ddiobjects): ?>
-            <diagram></diagram>
+            <diagram>
+                <model package="<?php print $package;?>" localID="<?php print $i;?>" owner="<?php print $package;?>"/>
+                <properties name="<?php print $package;?>" type="Logical"/>
+                <?php $i++;?>
+            </diagram>
             <?php endforeach;?>
 
 

@@ -60,7 +60,7 @@ function _generate_dot($package = null) {
     require_once('xmi_export.inc');
     $objects = get_all_node_objects($package);
 
-    $output ="#setup of the graph\n";
+
     $output .= 'digraph ddi4 {
         rankdir = "LR";
         node [
@@ -73,8 +73,9 @@ function _generate_dot($package = null) {
 
     $prefix = 'DDI_';
     
+    
     //Classes 
-    $output .="\n#Objects\n";
+
     foreach ($objects as $package => $classes) {
         $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
         $package_color = '#' . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)];
@@ -98,11 +99,10 @@ function _generate_dot($package = null) {
             }
             $properties .= ' \l ';
 
-            $output .= "\t" . $class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="http://lion.ddialliance.org/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
+            $output .= "\t" . $class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
         }
     }
 
-    $output .="#\nRanking\n";
     foreach ($objects as $package => $classes) {
         $output .= "\trank=";
         foreach ($classes as $class) {
@@ -127,23 +127,27 @@ function _generate_dot($package = null) {
                 if ($relation['target_object']) {
                     $color = '';
                     $arrow = 'vee';
+                    $arrow_type = 'l';
                     switch ($relation['type']) {
                         case 'Aggregation':
                             $arrow = 'odiamond';
+                            $side = 'r';
                             break;
                         case 'Composition':
                             $arrow = 'diamond';
+                            $side = 'r';
                             break;
                         default:
                             $arrow = 'open';
                             $color = '00000';
                     }
-                    $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side=l arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                    $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                 }
             }
         }
     }
     $output .= '}';
+    dsm($output);
     return $output;
 }
 
