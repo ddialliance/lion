@@ -5,7 +5,7 @@ define('DOCBOOK_HEADER', '<?xml version="1.0" encoding="UTF-8"?>
 
 function docbook_export($package = null) {
     require_once('xmi_export.inc');
-    $objects = get_all_node_objects();
+    $objects = get_all_node_objects($package);
     if($package != null){
         if(array_key_exists($package, $objects)){
             $tmp = $objects[$package];

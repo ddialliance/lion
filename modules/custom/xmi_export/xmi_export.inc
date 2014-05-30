@@ -17,10 +17,11 @@ function get_all_node_objects($package = null) {
     $objects = get_nodes($result);
     
     if($package != null){
-        if(array_key_exists($package, $objects)){
-            $tmp = $objects[$package];
-            $objects = array();
-            $objects[$package] = $tmp;
+        foreach ($objects as $package_name => $tmp){
+            if(strtolower($package_name) == strtolower($package)){
+                $objects = array();
+                $objects[$package] = $tmp;
+            }
         }
     }
     
@@ -104,7 +105,7 @@ function _put_into_packages($objects){
  * Pulls fields from a drupal node and creates an array of fields used
  * in the export
  * @param type $node
- * @return type
+ * @return array() associative array
  */
 function node_to_xmi_array($node) {
     $xmi = array('defenition', 
@@ -189,7 +190,7 @@ function node_to_xmi_array($node) {
 /**
  * Helper function to get value from a field array
  * @param type $field
- * @return string
+ * @return string the value of the field
  */
 function _get_value($field){
     if (array_key_exists('und', $field)) {
@@ -201,7 +202,7 @@ function _get_value($field){
 /**
  * Helper function to get the title of the node from a reference field
  * @param type $field
- * @return type
+ * @return string title of the referenced object
  */
 function _get_reference_title($field){
     $result = '';
@@ -212,6 +213,11 @@ function _get_reference_title($field){
     return $result;
 }
 
+/**
+ * Helper function to get title and uuid for a referenced object
+ * @param type $field
+ * @return array() title and uuid for the referenced node
+ */
 function _get_reference_info($field){
     $fields = array('title' => '', 'uuid'=> '');
     if (array_key_exists('und', $field)) {
