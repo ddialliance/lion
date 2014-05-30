@@ -33,7 +33,7 @@
                     <title>Properties</title>
                     <table label="<?php print $object['name']; ?>">    
                         <title>list of properties</title>
-                        <tgroup cols="2">
+                        <tgroup cols="4">
                             <thead>
                                 <row>
                                     <entry>Name</entry>
@@ -61,7 +61,7 @@
                     <title>Relationships</title>
                     <table label="<?php print $object['name']; ?>">
                         <title>list of relationships</title>
-                        <tgroup cols="2">
+                        <tgroup cols="6">
                             <thead>
                                 <row>
                                     <entry>Name</entry>
