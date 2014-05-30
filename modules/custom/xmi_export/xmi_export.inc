@@ -1,7 +1,8 @@
 <?php
 
 function xmi_export_page() {
-    $objects = get_all_node_objects();
+    $objects = get_all_node_objects(null);
+    dsm($objects);
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
 
@@ -71,7 +72,7 @@ function get_nodes_by_status($tid) {
 }
 
 function xmi_export_xmi($package = null) {
-    $objects = get_all_node_objects();
+    $objects = get_all_node_objects($package);
     if($package != null){
         if(array_key_exists($package, $objects)){
             $tmp = $objects[$package];
@@ -125,15 +126,17 @@ function node_to_xmi_array($node) {
         if ($node->PROPERTIES) {
             $xmi['properties'] = array();
             foreach ($node->PROPERTIES as $prop) {
-                $property = array('name', 'description', 'cardinality', 'datatype');
+                
+                    $property = array('name', 'description', 'cardinality', 'datatype');
 
-                $property['name']           = _get_value($prop->field_property_name);
-                $property['description']    = _get_value($prop->field_property_description);
-                $property['cardinality']    = _get_value($prop->field_property_cardinality);
+                    $property['name']           = _get_value($prop->field_property_name);
+                    $property['description']    = _get_value($prop->field_property_description_long);
+                    $property['cardinality']    = _get_value($prop->field_property_cardinality);
 
-                $property['datatype']       = _get_reference_title($prop->field_property_datatype);
+                    $property['datatype']       = _get_reference_title($prop->field_property_datatype);
 
-                $xmi['properties'][] = $property;
+                    $xmi['properties'][$property['name']] = $property;
+                
             }
         }
     }
@@ -162,10 +165,10 @@ function node_to_xmi_array($node) {
                     $relationship['xmi_type'] = 'none';
             }
             
-            $relationship['description']        = _get_value($rel->field_relationship_description);
+            $relationship['description']        = _get_value($rel->field_relationship_description_l);
             
             $relationship['target_object'] = _get_reference_title($rel->field_relationship_target_object);
-            $xmi['relationships'][] = $relationship;
+            $xmi['relationships'][$relationship['name']] = $relationship;
         }
     }
 
@@ -204,19 +207,21 @@ function _get_reference_title($field){
  * @return string
  */
 function _render_datatype($type){
+    $type = trim($type);
     $output = '<type xmi:type="'.$type.'"/>';
     
-    if(strstr('xs:')){
+    if(substr($type, 0, 3 ) === "xs:"){
         switch($type){
-            case 'xs:string':
-            case 'xs:boolean':
-            case 'xs:integer':
+            case "xs:string":
+            case "xs:boolean":
+            case "xs:integer":
                 $parts = explode(':', $type);
                 $uctype = ucfirst ($parts[1]);
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#'.$uctype.'"/>';
                 break;
-            case 'xs:double':
-            case 'xs:float':
+            case "xs:double":
+            case "xs:float":
+            case "xs:decimal":
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
                 break;
             default:
@@ -225,4 +230,9 @@ function _render_datatype($type){
     }
     
     return $output;
+}
+
+function _escape_for_export($string){
+    $string = str_replace(':', '_', $string);
+    return $string;
 }

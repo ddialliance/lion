@@ -1,5 +1,5 @@
 <xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
-    <!-- NOTE: exporter have to be "Enterprise Architect", EA wont read it if set do eg. Drupal !-->
+    <!-- NOTE: exporter have to be "Enterprise Architect", EA wont read it if set do eg. Drupal -->
     <xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
     <uml:Model xmi:type="uml:Model" xmi:id="42" name="ddi4">
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_model" name="Class Model (Exported from Drupal)" visibility="public">
@@ -42,7 +42,7 @@
                         </packagedElement>
                         <?php foreach ($object['relationships'] as $relation): ?>
                             <?php if ($relation['target_object']): ?>
-                                    <!-- <?php print $object['name']; ?>.<?php print $relation['name']; ?> -->
+                    <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
                                 <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>" visibility="public">
 
                                     <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
@@ -70,7 +70,7 @@
             </element>
             <?php endforeach;?>
             
-            <!-- Objects !-->
+            <!-- Objects -->
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
             <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="BoundingBox" scope="package">
@@ -83,13 +83,13 @@
         </elements>
         
         <diagrams>
-            <!-- TODO: Generate one graph for each package !-->
+            <!-- TODO: Generate one graph for each package -->
             <?php foreach ($objects as $package => $ddiobjects): ?>
             <diagram></diagram>
             <?php endforeach;?>
 
 
-            <!-- TODO: Generate one graph for each view !-->
+            <!-- TODO: Generate one graph for each view -->
         </diagrams>
     </xmi:Extension>
 </xmi:XMI>
