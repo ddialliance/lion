@@ -20,7 +20,7 @@ function get_all_node_objects($package = null) {
         foreach ($objects as $package_name => $tmp){
             if(strtolower($package_name) == strtolower($package)){
                 $objects = array();
-                $objects[$package] = $tmp;
+                $objects[$package_name] = $tmp;
             }
         }
     }
@@ -56,7 +56,11 @@ function get_nodes($result) {
                 $node->RELATIONSHIP[] = field_collection_item_load($item['value']);
             }
         }
-        $objects[$row->name] = node_to_xmi_array($node);
+        
+        $arr = node_to_xmi_array($node);
+        if($arr['package'] != 'Keep' && $arr['package'] != 'Toss' && $arr['package'] != 'Review'){
+            $objects[$row->name] = $arr;
+        }
     }
     
     return _put_into_packages($objects);

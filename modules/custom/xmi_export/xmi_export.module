@@ -5,9 +5,9 @@
  */
 function xmi_export_menu() {
     $items['xmi-export'] = array(
-        'title' => 'Export XMI',
+        'title' => 'Testpage for Export XMI',
         'page callback' => 'xmi_export_page',
-        'access arguments' => array('access content'),
+        'access arguments' => array('administer modules'),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'xmi_export.inc',
     );

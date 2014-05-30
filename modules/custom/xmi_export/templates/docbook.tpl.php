@@ -7,10 +7,10 @@
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
-    <part xml:id="ddi4-<?php print str_replace(' ', '',$package);?>">
+    <chapter xml:id="ddi4-<?php print str_replace(' ', '',$package);?>">
             <title><?php print $package;?></title>
             <?php foreach($ddiobjects as $object):?>
-            <chapter xml:id="ddi4-<?php print $object['uuid']; ?>">
+            <section xml:id="ddi4-<?php print $object['uuid']; ?>">
                 <title><?php print $object['name']; ?></title>
                 <?php if($object['extends']):?>
                 <section  revision="" role="extends">
@@ -92,8 +92,8 @@
                     </table>
                 </section>
                 <?php endif; ?>
-            </chapter>
+            </section>
             <?php endforeach; ?>
-            </part>
+            </chapter>
         <?php endforeach; ?>
 </book>

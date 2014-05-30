@@ -73,28 +73,127 @@
             <!-- Objects -->
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
-            <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="BoundingBox" scope="package">
+            <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="<?php print $object['name'];?>" scope="package">
                 <model package="<?php print $package;?>" tpos="0" ea_localid="<?php print $object['nid'];?>" ea_eleType="element"/>
+                <!-- TODO: get the documentation in escaped html -->
                 <properties documentation=""  isSpecification="false" sType="Class" nType="0" scope="package" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
                 <extendedProperties tagged="0" package_name="<?php print $package;?>"/>
+                <code gentype="Java"/>
+                
+                <?php if(count($object['properties'])): ?>
+                <attributes>
+                    
+                    <?php foreach ($object['properties'] as $item): ?>
+                        <attribute xmi:idref="<?php print $item['name']; ?>" name="<?php print $item['name']; ?>" scope="Public">
+                                <initial/>
+                                <documentation/>
+                                <!-- <model ea_localid="2414" ea_guid="{31588E67-78D6-4a2a-8AAC-4EAAB311365C}"/> -->
+                                <properties derived="0" collection="false" duplicates="1" changeability="changeable"/>
+                                <coords ordered="0"/>
+                                <containment position="0"/>
+                                <stereotype/>
+                                <?php if (array_key_exists('cardinality', $item)): ?>
+                                    <?php $parts = explode('..', $string); ?>
+                                    <?php if(count($parts) == 2): ?>
+                                    <bounds lower="<?php print $parts[0];?>" upper="<?php print $parts[1];?>"/>
+                                    <?php endif;?>
+                                <?php endif;?>
+                                <options/>
+                                <style/>
+                                <styleex value="IsLiteral=0;"/>
+                                <tags/>
+                                <xrefs/>
+                        </attribute>      
+                    <?php endforeach;?>
+                </attributes>
+                <?php endif;?>
+                
+                <?php if(count($object['relationships']) || $object['extends']):?>
+                <links>
+                    <?php if ($object['extends']): ?>
+                    <!-- extends -->
+                    <Generalization xmi:id="EA_<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" start="<?php print $object['name'];?>" end="<?php print $object['extends']; ?>"/>
+                    <?php endif; ?>
+
+                    <?php foreach ($object['relationships'] as $relation): ?>
+                        <?php if ($relation['target_object']): ?>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                </links>
+                <?php endif;?>
             </element>
                 <?php endforeach;?>
             <?php endforeach;?>
         </elements>
         
+        <connectors>
+            <?php foreach ($objects as $package => $ddiobjects): ?>
+                <?php foreach ($ddiobjects as $object): ?>
+                    <?php if(count($object['relationships']) || $object['extends']):?>
+                        <?php if ($object['extends']): ?>
+                            <!-- extends connector -->
+                            <connector xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source">
+                                <source xmi:idref="<?php print $object['name']; ?>">
+                                        <model ea_localid="1621" type="Class" name="<?php print $object['name']; ?>"/>
+                                        <role visibility="Public"/>
+                                        <type aggregation="none"/>
+                                        <constraints/>
+                                        <modifiers isOrdered="false" isNavigable="false"/>
+                                        <style/>
+                                        <documentation/>
+                                        <xrefs/>
+                                        <tags/>
+                                </source>
+                                <target xmi:idref="<?php print $relation['name']; ?>">
+                                        <model ea_localid="1620" type="Class" name="?php print $relation['name']; ?>"/>
+                                        <role visibility="Public"/>
+                                        <type aggregation="none"/>
+                                        <constraints/>
+                                        <modifiers isOrdered="false" isNavigable="false"/>
+                                        <style/>
+                                        <documentation/>
+                                        <xrefs/>
+                                        <tags/>
+                                </target>
+                                <model ea_localid="3342"/>
+                                <properties ea_type="Generalization" direction="Source -&gt; Destination"/>
+                                <parameterSubstitutions/>
+                                <documentation/>
+                                <appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+                                <labels/>
+                                <extendedProperties/>
+                                <style/>
+                                <xrefs/>
+                                <tags/>
+                            </connector>
+                        <?php endif;?>
+                        <?php foreach ($object['relationships'] as $relation): ?>
+                            
+                        <?php endforeach;?>
+                    <?php endif;?>
+                <?php endforeach;?>
+            <?php endforeach;?>
+        </connectors>
+        
         <diagrams>
-            <!-- TODO: Generate one graph for each package -->
+            <!-- TODO: Generate a diagram for each package -->
             <?php $i = 1; ?>
             <?php foreach ($objects as $package => $ddiobjects): ?>
             <diagram>
                 <model package="<?php print $package;?>" localID="<?php print $i;?>" owner="<?php print $package;?>"/>
                 <properties name="<?php print $package;?>" type="Logical"/>
                 <?php $i++;?>
+                <elements>
+                <?php $j = 1;?>
+                <?php foreach ($ddiobjects as $object): ?>
+                    <element subject="<?php print $object['name'];?>" seqno="<?php print $j;?>" />
+                    <?php $j++;?>
+                <?php endforeach;?>
+                </elements>
             </diagram>
             <?php endforeach;?>
-
-
-            <!-- TODO: Generate one graph for each view -->
+            <!-- TODO: Generate a diagram for each view -->
         </diagrams>
+        
     </xmi:Extension>
 </xmi:XMI>
