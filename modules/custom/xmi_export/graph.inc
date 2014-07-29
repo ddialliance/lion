@@ -47,14 +47,50 @@ function graph_dot() {
 }
 
 function dot_package_export($package){
-    
     $output = _generate_dot($package);
     header("Content-Type: text/plain");
     print $output;
     exit(0);
 }
 
+function dot_package_export_image($package, $format){
+    
+    $graph = _generate_dot($package);
+    
+    $output = graphviz_filter_filterproc('
+        /*
+         * @formats = '.$format.'
+         * @imagemap = true
+         *
+         */'.$graph
+    );
+    
+    $regex = '/https?\:\/\/[^\" ]+/i';
+    preg_match_all($regex, $output, $matches);
+    switch($format){
+        case "png":
+            header("Content-Type: image/png");
+            break;
+        
+        case "svg":
+            header("Content-Type: image/svg+xml");
+            break;
+    }
+    
+    
+    foreach($matches[0] as $url){
+        if(substr($url, -8) === ".out.".$format){
+            print file_get_contents($url);
+            break;
+        }
+    }
+    
+    exit(0);
+}
+
 function _generate_dot($package = null) {
+    global $base_url;
+
     set_time_limit(250);
     ini_set('memory_limit','512M');
     require_once('xmi_export.inc');
@@ -99,7 +135,7 @@ function _generate_dot($package = null) {
             }
             $properties .= ' \l ';
 
-            $output .= "\t" . $class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
+            $output .= "\t" . $class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="'.$base_url.'/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
         }
     }
 

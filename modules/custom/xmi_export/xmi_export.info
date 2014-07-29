@@ -4,6 +4,7 @@ package = XMI
 dependencies[] = entity
 dependencies[] = entityreference
 dependencies[] = field_collection
+dependencies[] = graphviz_filter
 dependencies[] = uuid
 version = VERSION
 core = 7.x
