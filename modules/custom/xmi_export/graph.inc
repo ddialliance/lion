@@ -40,6 +40,18 @@ function graph_json() {
     exit(0);
 }
 
+function dot_url_list(){
+    global $base_url;
+    require_once('xmi_export.inc');
+    header("Content-Type: text/plain");
+    $packages = get_all_packages();
+    
+    foreach($packages as $package){
+        print $base_url.'/package/'.  strtolower($package['name']).'/dot.txt/'.$package['name'].".dot\n";
+    }
+    exit(0);
+}
+
 function graph_dot() {
     header("Content-Type: text/plain");
     print _generate_dot();
@@ -183,7 +195,7 @@ function _generate_dot($package = null) {
         }
     }
     $output .= '}';
-    dsm($output);
+    
     return $output;
 }
 

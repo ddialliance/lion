@@ -35,6 +35,11 @@ function get_all_packages(){
                             ':type' => 'package',
                             ':status' => 1,
                         ));    
+    $packages = array();
+    while($p = $result->fetchAssoc()){
+        $packages[] = $p;
+    }
+    return $packages;
 }
 
 function get_nodes($result) {
