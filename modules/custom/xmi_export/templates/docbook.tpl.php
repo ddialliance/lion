@@ -31,65 +31,82 @@
             <?php if(count($object['properties']) > 0): ?>
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
                 <title>Properties</title>
-                <table label="<?php print $object['name']; ?>">    
-                    <title>list of properties</title>
-                    <tgroup cols="4">
-                        <thead>
+                <?php foreach($object['properties'] as $item):?>
+                <table label="<?php print $object['name']; ?>" frame="all">
+                    <title/>
+                    <tgroup cols="2">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="8.14*"/>
+                        <thead/>
+                        <tbody>
                             <row>
                                 <entry>Name</entry>
-                                <entry>Datatype</entry>
-                                <entry>Description</entry>
-                                <entry>Cardinality</entry>
-                            </row>
-                        </thead>
-                        <tbody>
-                            <?php foreach($object['properties'] as $item):?>
-                            <row>
                                 <entry role="name"><?php print $item['name']; ?></entry>
+                            </row>
+                            <row>
+                                <entry>Datatype</entry>
                                 <entry role="datatype"><?php if(array_key_exists('datatype',$item)){print $item['datatype'];} ?></entry>
-                                <entry role="description"><?php if(array_key_exists('description',$item)){print $item['description'];} ?></entry>
+                            </row>
+                            <row>
+                                <entry>Cardinality</entry>
                                 <entry role="cardinality"><?php if(array_key_exists('datatype',$item)){print $item['cardinality'];} ?></entry>
                             </row>
-                            <?php endforeach;?>
+                            <row>
+                                <entry role="description" namest="c1" nameend="c2">
+                                    <?php if(array_key_exists('description',$item)){print $item['description'];} ?>
+                                </entry>
+                            </row>
                         </tbody>
-                    </tgroup>
+                    </tgroup>                    
                 </table>
+                <?php endforeach;?>
             </section>
             <?php endif;?>
             <?php if(count($object['relationships']) > 0): ?>
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-relationships" revision="" role="relationships">
                 <title>Relationships</title>
-                <table label="<?php print $object['name']; ?>">
-                    <title>list of relationships</title>
-                    <tgroup cols="6">
-                        <thead>
+                
+                <?php foreach($object['relationships'] as $item):?>
+                <table frame="all">
+                    <title/>
+                    <tgroup cols="2">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="8.14*"/>
+                        <thead/>
+                        <tbody>
                             <row>
                                 <entry>Name</entry>
-                                <entry>Target</entry>
-                                <entry>Description</entry>
-                                <entry>Type</entry>
-                                <entry>Source cardinality</entry>
-                                <entry>Target cardinality</entry>
-                            </row>
-                        </thead>
-                        <tbody>
-                            <?php foreach($object['relationships'] as $item):?>
-                            <row>
                                 <entry><?php print $item['name'];?></entry>
+                            </row>
+                            <row>
+                                <entry>Target</entry>
                                 <?php if($item['target_object']):?>
                                 <entry><link linkend="ddi4-<?php print $item['target_object_uuid'];?>"><?php print $item['target_object'];?></link></entry>
                                 <?php else: ?>
                                 <entry>NOT DEFINED</entry>
                                 <?php endif;?>
-                                <entry><?php print $item['description'];?></entry>
-                                <entry><?php print $item['type'];?></entry>
-                                <entry><?php print $item['source_cardinality'];?></entry>
-                                <entry><?php print $item['target_cardinality'];?></entry>
                             </row>
-                            <?php endforeach;?>
+                            <row>
+                                <entry>Type</entry>
+                                <entry><?php print $item['type'];?></entry>
+                            </row>
+                            <row>
+                                <entry>Source Cardinality</entry>
+                                <entry><?php print $item['source_cardinality'];?></entry>
+                            </row>
+                            <row>
+                                <entry>Target Cardinality</entry>
+                                <entry><?php print $item['target_cardinality'];?></entry>
+                            </row>                            
+                            <row>
+                                <entry namest="c1" nameend="c2">
+                                    <?php print $item['description'];?>
+                                </entry>
+                            </row>
                         </tbody>
                     </tgroup>
                 </table>
+                <?php endforeach;?>
             </section>
             <?php endif; ?>
         </section>
