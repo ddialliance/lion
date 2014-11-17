@@ -124,6 +124,14 @@ function xmi_export_menu() {
         'file' => 'graph.inc',
     );
     
+    $items['issues'] = array(
+        'title' => 'Validation of objects',
+        'page callback' => 'issues_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'validate.inc',
+    );
+    
 
     return $items;
 }
@@ -138,6 +146,10 @@ function xmi_export_theme() {
         'xmi' => array(
             'path' => $path,
             'template' => 'xmi',
+            'variables' => array('objects' => NULL),
+        ), 'issues' => array(
+            'path' => $path,
+            'template' => 'issues',
             'variables' => array('objects' => NULL),
         ), 'xmi_cardinality' => array(
             'path' => $path,

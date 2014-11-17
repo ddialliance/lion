@@ -179,17 +179,20 @@ function _generate_dot($package = null) {
                     switch ($relation['type']) {
                         case 'Aggregation':
                             $arrow = 'odiamond';
-                            $side = 'r';
+                            $side = 'l';
+                            $output .= "\t" . $relation['target_object'] . ' -> ' .  $class['name'] . ':' . $class['name'] . $relation['name'] . ' [arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         case 'Composition':
                             $arrow = 'diamond';
                             $side = 'r';
+                            $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
                             $arrow = 'open';
                             $color = '00000';
+                            $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                     }
-                    $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                    
                 }
             }
         }

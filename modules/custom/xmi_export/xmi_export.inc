@@ -8,21 +8,44 @@ function xmi_export_page() {
 
 function get_all_node_objects($package = null) {
 
-    $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
-                        FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
-                        WHERE n.type = :type AND n.status = :status", array(
-                            ':type' => 'ddiobject',
-                            ':status' => 1,
-                        ));
-    $objects = get_nodes($result);
     
-    if($package != null){
-        foreach ($objects as $package_name => $tmp){
-            if(strtolower($package_name) == strtolower($package)){
-                $objects = array();
-                $objects[$package_name] = $tmp;
+    
+    $last_update = db_query('SELECT changed FROM {node} ORDER BY changed DESC LIMIT 1')
+                        ->fetchField();
+    
+    $objects = &drupal_static(__FUNCTION__);
+    if (!isset($my_data)) {
+      if ($cache = cache_get('xmi_export'.$last_update.'-'.$package)) {
+        $objects = $cache->data;
+      }
+      else {
+        // Do your expensive calculations here, and populate $my_data
+        // with the correct stuff..
+        $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
+                            FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
+                            WHERE n.type = :type AND n.status = :status
+                            AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
+                                            INNER JOIN node n ON n.nid = f.field_package_target_id 
+                                            WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test') AND f.deleted = 0
+                                         )
+                            ", array(
+                                ':type' => 'ddiobject',
+                                ':status' => 1,
+                            ));
+        $objects = get_nodes($result);
+
+        if($package != null){
+            foreach ($objects as $package_name => $tmp){
+                if(strtolower($package_name) == strtolower($package)){
+                    $objects = array();
+                    $objects[$package_name] = $tmp;
+                }
             }
-        }
+        }          
+          
+          
+        cache_set('xmi_export'.$last_update.'-'.$package, $objects, 'cache', time() + 3600);
+      }
     }
     
     return $objects;
@@ -31,7 +54,8 @@ function get_all_node_objects($package = null) {
 function get_all_packages(){
     $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
                         FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
-                        WHERE n.type = :type AND n.status = :status", array(
+                        WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test')
+                        AND n.type = :type AND n.status = :status", array(
                             ':type' => 'package',
                             ':status' => 1,
                         ));    
@@ -47,7 +71,7 @@ function get_nodes($result) {
 
     foreach ($result as $row) {
         $node = node_load($row->nid);
-
+        
         if ($node->field_property) {
             $node->PROPERTIES = array();
             foreach ($node->field_property['und'] as $item) {
@@ -61,11 +85,11 @@ function get_nodes($result) {
                 $node->RELATIONSHIP[] = field_collection_item_load($item['value']);
             }
         }
+
+       $arr = node_to_xmi_array($node);
+
+       $objects[$row->name] = $arr;
         
-        $arr = node_to_xmi_array($node);
-        if($arr['package'] != 'Keep' && $arr['package'] != 'Toss' && $arr['package'] != 'Review'){
-            $objects[$row->name] = $arr;
-        }
     }
     
     return _put_into_packages($objects);
@@ -117,9 +141,9 @@ function _put_into_packages($objects){
  * @return array() associative array
  */
 function node_to_xmi_array($node) {
-    $xmi = array('defenition', 
-                 'name', 
-                 'package',
+    $xmi = array('definition' => "", 
+                 'name' => "", 
+                 'package' => "",
                  'properties' => array(),
                  'relationships' => array(),
                  'is_abstract' => 'false'
@@ -142,7 +166,7 @@ function node_to_xmi_array($node) {
             $xmi['properties'] = array();
             foreach ($node->PROPERTIES as $prop) {
                 
-                    $property = array('name', 'description', 'cardinality', 'datatype');
+                    $property = array('name'=>"", 'description'=>"", 'cardinality'=>"", 'datatype'=>"");
 
                     $property['name']           = _get_value($prop->field_property_name);
                     $property['description']    = _get_value($prop->field_property_description_long);
@@ -161,7 +185,7 @@ function node_to_xmi_array($node) {
 
         $xmi['relationships'] = array();
         foreach ($node->RELATIONSHIP as $rel) {
-            $relationship = array('name','target_object', 'source_cardinality', 'target_cardinality', 'type', 'description');
+            $relationship = array('name'=>"",'target_object'=>"", 'source_cardinality'=>"", 'target_cardinality'=>"", 'type'=>"", 'description'=>"");
             
             $relationship['name']               = _get_value($rel->field_relationship_name);
             $relationship['source_cardinality'] = _get_value($rel->field_relationship_source_cardin);

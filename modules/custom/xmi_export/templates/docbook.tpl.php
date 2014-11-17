@@ -36,8 +36,8 @@
                     <title/>
                     <tgroup cols="2">
                         <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="8.14*"/>
-                        <thead/>
+                        <colspec colname="c2" colnum="2" colwidth="7.87*"/>
+                        
                         <tbody>
                             <row>
                                 <entry>Name</entry>
@@ -71,8 +71,8 @@
                     <title/>
                     <tgroup cols="2">
                         <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="8.14*"/>
-                        <thead/>
+                        <colspec colname="c2" colnum="2" colwidth="7.87*"/>
+                        
                         <tbody>
                             <row>
                                 <entry>Name</entry>
