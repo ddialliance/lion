@@ -75,8 +75,8 @@
                 <?php foreach ($ddiobjects as $object): ?>
             <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="<?php print $object['name'];?>" scope="package">
                 <model package="<?php print $package;?>" tpos="0" ea_localid="<?php print $object['nid'];?>" ea_eleType="element"/>
-                <!-- TODO: get the documentation in escaped html -->
-                <properties documentation=""  isSpecification="false" sType="Class" nType="0" scope="package" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+                <!-- the documentation in escaped html -->
+                <properties documentation="<?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition'], ENT_QUOTES);} ?>"  isSpecification="false" sType="Class" nType="0" scope="package" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
                 <extendedProperties tagged="0" package_name="<?php print $package;?>"/>
                 <code gentype="Java"/>
                 
@@ -86,7 +86,8 @@
                     <?php foreach ($object['properties'] as $item): ?>
                         <attribute xmi:idref="<?php print $item['name']; ?>" name="<?php print $item['name']; ?>" scope="Public">
                                 <initial/>
-                                <documentation/>
+                                <documentation value="<?php if(array_key_exists('description',$item)){print htmlspecialchars($item['description'], ENT_QUOTES);} ?>"/>
+                                
                                 <!-- <model ea_localid="2414" ea_guid="{31588E67-78D6-4a2a-8AAC-4EAAB311365C}"/> -->
                                 <properties derived="0" collection="false" duplicates="1" changeability="changeable"/>
                                 <coords ordered="0"/>
