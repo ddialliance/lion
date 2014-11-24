@@ -18,9 +18,9 @@ function get_all_node_objects($collection = null, $type = "package") {
       else {
         if($type == "view"){
             
-            $result = db_query("SELECT field_object_reference_target_id AS nid, n.title AS name
+            $result = db_query("SELECT field_object_reference_target_id AS nid
                                     FROM field_data_field_object_reference f
-                                    INNER JOIN node n ON n.nid = f.entity_id
+                                    INNER JOIN {node} n ON n.nid = f.entity_id
                                     WHERE n.status = :status
                                     AND n.title = :title
                                 ", array(
@@ -28,8 +28,8 @@ function get_all_node_objects($collection = null, $type = "package") {
                                     ':title' => $collection
                                 ));            
         }else{
-            $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
-                                FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
+            $result = db_query("SELECT n.nid
+                                FROM {node} n 
                                 WHERE n.type = :type AND n.status = :status
                                 AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
                                                 INNER JOIN node n ON n.nid = f.field_package_target_id 

@@ -111,8 +111,12 @@ function _generate_dot($collection = null, $type = "package") {
 
     $output .= 'digraph ddi4 {
         rankdir = "LR";
+        graph [fontname = "helvetica"];
+
+        edge [fontname = "helvetica"];
         node [
             fillcolor= "gray"
+            fontname = "helvetica"
             fontsize = "12"
             shape = "record"
             align = "left"
@@ -131,19 +135,27 @@ function _generate_dot($collection = null, $type = "package") {
         foreach ($classes as $class) {
             $properties = ' | ';
             $i = 2;
-            foreach ($class['properties'] as $property) {
-                $properties .= '+ ' . $property['name'];
-                if ($property['datatype']) {
-                    $properties .= ':' . $property['datatype'];
+            if(count($class['properties']) > 0){
+                foreach ($class['properties'] as $property) {
+                    $properties .= '+ ' . $property['name'];
+                    if ($property['datatype']) {
+                        $properties .= ':' . $property['datatype'];
+                    }
+                    $properties .= ' \l ';
+                    $i++;
                 }
-                $properties .= ' \l ';
-                $i++;
+            }else{
+                $properties .= "(no properties)";
             }
             $properties .= ' \l ';
 
-            foreach ($class['relationships'] as $relation) {
-                $properties .= ' \l| <' . $class['name'] . $relation['name'] . '> ' . $relation['name'];
-                $i++;
+            if(count($class['relationships']) > 0){
+                foreach ($class['relationships'] as $relation) {
+                    $properties .= ' \l| <' . $class['name'] . $relation['name'] . '> ' . $relation['name'];
+                    $i++;
+                }
+            }else{
+                $properties .= "\l| (no relationships)";
             }
             $properties .= ' \l ';
 
