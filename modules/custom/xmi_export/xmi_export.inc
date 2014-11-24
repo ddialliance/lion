@@ -2,52 +2,62 @@
 
 function xmi_export_page() {
     $objects = get_all_node_objects(null);
-    dsm($objects);
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
 
-function get_all_node_objects($package = null) {
+function get_all_node_objects($collection = null, $type = "package") {
 
-    
-    
     $last_update = db_query('SELECT changed FROM {node} ORDER BY changed DESC LIMIT 1')
                         ->fetchField();
     
     $objects = &drupal_static(__FUNCTION__);
     if (!isset($my_data)) {
-      if ($cache = cache_get('xmi_export'.$last_update.'-'.$package)) {
+      if ($cache = cache_get('xmi_export'.$last_update.'-'.$collection.'-'.$type)) {
         $objects = $cache->data;
       }
       else {
-        // Do your expensive calculations here, and populate $my_data
-        // with the correct stuff..
-        $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
-                            FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
-                            WHERE n.type = :type AND n.status = :status
-                            AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
-                                            INNER JOIN node n ON n.nid = f.field_package_target_id 
-                                            WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test') AND f.deleted = 0
-                                         )
-                            ", array(
-                                ':type' => 'ddiobject',
-                                ':status' => 1,
-                            ));
+        if($type == "view"){
+            
+            $result = db_query("SELECT field_object_reference_target_id AS nid, n.title AS name
+                                    FROM field_data_field_object_reference f
+                                    INNER JOIN node n ON n.nid = f.entity_id
+                                    WHERE n.status = :status
+                                    AND n.title = :title
+                                ", array(
+                                    ':status' => 1,
+                                    ':title' => $collection
+                                ));            
+        }else{
+            $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
+                                FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
+                                WHERE n.type = :type AND n.status = :status
+                                AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
+                                                INNER JOIN node n ON n.nid = f.field_package_target_id 
+                                                WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test') AND f.deleted = 0
+                                             )
+                                ", array(
+                                    ':type' => 'ddiobject',
+                                    ':status' => 1,
+                                ));
+        }
+        
         $objects = get_nodes($result);
 
-        if($package != null){
-            foreach ($objects as $package_name => $tmp){
-                if(strtolower($package_name) == strtolower($package)){
-                    $objects = array();
-                    $objects[$package_name] = $tmp;
+        if($type == "package"){
+            if($collection != null){
+                foreach ($objects as $package_name => $tmp){
+                    if(strtolower($package_name) == strtolower($collection)){
+                        $objects = array();
+                        $objects[$package_name] = $tmp;
+                    }
                 }
-            }
-        }          
-          
-          
-        cache_set('xmi_export'.$last_update.'-'.$package, $objects, 'cache', time() + 3600);
+            }          
+        }
+        
+        cache_set('xmi_export'.$last_update.'-'.$collection.'-'.$type, $objects, 'cache', time() + 3600);
       }
     }
-    
+
     return $objects;
 }
 
@@ -88,12 +98,11 @@ function get_nodes($result) {
 
        $arr = node_to_xmi_array($node);
 
-       $objects[$row->name] = $arr;
+       $objects[$node->title] = $arr;
         
     }
     
     return _put_into_packages($objects);
-    //return $objects;
 }
 
 function get_nodes_by_status($tid) {

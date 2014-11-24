@@ -100,13 +100,13 @@ function dot_package_export_image($package, $format){
     exit(0);
 }
 
-function _generate_dot($package = null) {
+function _generate_dot($collection = null, $type = "package") {
     global $base_url;
 
     set_time_limit(250);
     ini_set('memory_limit','512M');
     require_once('xmi_export.inc');
-    $objects = get_all_node_objects($package);
+    $objects = get_all_node_objects($collection, $type);
 
 
     $output .= 'digraph ddi4 {
