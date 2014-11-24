@@ -62,7 +62,7 @@ function validate_object($object){
         }        
         
         if (starts_with_upper($property["name"])){
-            $object["warnings"][] = "Property '".$property["name"]."' first character should be lower case";
+            $object["warnings"][] = "Property '".$property["name"]."' name should be initial lower case";
         }
         
         if (!ctype_alpha($property["name"]) && !startsWith($property["name"], "xml:")){
@@ -85,7 +85,7 @@ function validate_object($object){
         }
         
         if (starts_with_upper($relationship["name"])){
-            $object["warnings"][] = "Relationship '".$relationship["name"]."' first character should be lower case";
+            $object["warnings"][] = "Relationship '".$relationship["name"]."' name should be initial lower case";
         }
         
         if (!ctype_alpha($relationship["name"])){

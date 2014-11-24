@@ -47,6 +47,25 @@ function revisioning_rules_event_info() {
 }
 
 /**
+ * Implements hook_rules_event_info_alter().
+ *
+ * Add revision variable to all events with node. [#2232451]
+ */
+function revisioning_rules_event_info_alter(&$events) {
+  foreach ($events as $key => $event) {
+    if (isset($event['variables'])) {
+      foreach ($event['variables'] as $name => $variable) {
+        if ($variable['type'] == 'node') {
+          $extra = _revisioning_rules_event_variables();
+          unset($extra['node']);
+          $events[$key]['variables'] += $extra;
+        }
+      }
+    }
+  }
+}
+
+/**
  * Returns event variables suitable for use with a node revision event.
  *
  * (aka Data Selectors)
@@ -58,6 +77,10 @@ function _revisioning_rules_event_variables() {
       'label' => t('acting user'),
       'description' => t('The acting user.'),
       'handler' => 'revisioning_events_argument_global_user',
+    ),
+    'node' => array(
+      'type' => 'node',
+      'label' => t('target node.'),
     ),
     'revision' => array(
       // Type revisioning_revision' ?
@@ -98,12 +121,11 @@ function revisioning_events_argument_current_revision($arguments, $name, $info) 
 
 /**
  * Target revision author argument handler.
- *
-function revisioning_events_argument_target_revision_author($arguments,
-$name, $info) {
+ */
+function revisioning_events_argument_target_revision_author($arguments, $name, $info) {
   global $user;
   $node = $arguments['node'];
-  return $user; // user_load($node->revision_uid);
+  return user_load($node->revision_uid);
 }
 
 function revisioning_events_argument_node_author($arguments, $name, $info) {
@@ -111,8 +133,7 @@ function revisioning_events_argument_node_author($arguments, $name, $info) {
   return user_load($node->uid);
 }
 
-function revisioning_events_argument_current_revision_author($arguments, $name,
-$info) {
+function revisioning_events_argument_current_revision_author($arguments, $name, $info) {
   $node = $arguments['node'];
   $current_vid = $node->current_revision_id;
   if ($node->vid != $current_vid) {
