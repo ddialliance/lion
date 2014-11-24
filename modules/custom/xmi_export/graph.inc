@@ -111,9 +111,10 @@ function _generate_dot($collection = null, $type = "package") {
 
     $output .= 'digraph ddi4 {
         rankdir = "LR";
-        graph [fontname = "helvetica"];
+        graph [
+            fontname = "helvetica"
+        ];
 
-        edge [fontname = "helvetica"];
         node [
             fillcolor= "gray"
             fontname = "helvetica"
@@ -121,13 +122,17 @@ function _generate_dot($collection = null, $type = "package") {
             shape = "record"
             align = "left"
         ];
+        
+        edge [
+            fontname = "helvetica"
+            fontsize = "10"
+        ];
 ';
 
     $prefix = 'DDI_';
     
     
     //Classes 
-
     foreach ($objects as $package => $classes) {
         $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
         $package_color = '#' . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)];
@@ -159,14 +164,14 @@ function _generate_dot($collection = null, $type = "package") {
             }
             $properties .= ' \l ';
 
-            $output .= "\t" . $class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="'.$base_url.'/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
+            $output .= "\t" . $prefix.$class['name'] . ' [tooltip="'.$class['package'].':'.$class['name'].'" href="'.$base_url.'/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
         }
     }
 
     foreach ($objects as $package => $classes) {
         $output .= "\trank=";
         foreach ($classes as $class) {
-            $output .= $class['name'] . ';';
+            $output .= $prefix.$class['name'] . ';';
         }
         $output .= "\n";
     }
@@ -179,7 +184,7 @@ function _generate_dot($collection = null, $type = "package") {
 
             //extensions
             if ($class['extends']) {
-                $output .= "\t" . $class['name'] . ' -> ' . $class['extends'] . ' [arrowhead=empty color="#000000" ];' . "\n";
+                $output .= "\t" . $prefix.$class['name'] . ' -> ' . $prefix.$class['extends'] . ' [arrowhead=empty color="#000000" ];' . "\n";
             }
 
             //relations
@@ -192,17 +197,17 @@ function _generate_dot($collection = null, $type = "package") {
                         case 'Aggregation':
                             $arrow = 'odiamond';
                             $side = 'l';
-                            $output .= "\t" . $relation['target_object'] . ' -> ' .  $class['name'] . ':' . $class['name'] . $relation['name'] . ' [arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$relation['target_object'] . ' -> ' .  $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         case 'Composition':
                             $arrow = 'diamond';
                             $side = 'r';
-                            $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
                             $arrow = 'open';
                             $color = '00000';
-                            $output .= "\t" . $class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                     }
                     
                 }
