@@ -165,3 +165,43 @@ function xmi_export_theme() {
             'variables' => array('dot' => NULL)
     ));
 }
+
+function xmi_export_entity_diff_alter(&$entity_diffs, &$context) {
+  $entity_diffs['field_property']['#old'] = _diff_cleanup($entity_diffs['field_property']['#old']);
+  $entity_diffs['field_property']['#new'] = _diff_cleanup($entity_diffs['field_property']['#new']);
+  
+  $entity_diffs['field_relationship']['#old'] = _diff_cleanup($entity_diffs['field_relationship']['#old']);
+  $entity_diffs['field_relationship']['#new'] = _diff_cleanup($entity_diffs['field_relationship']['#new']);  
+  
+  $entity_diffs['field_rdf_mapping']['#old'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#old']);
+  $entity_diffs['field_rdf_mapping']['#new'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#new']);  
+}
+
+function _diff_cleanup($field) {
+  if (is_array($field)) {
+    $subject = implode(PHP_EOL, $field);
+  }
+  else {
+    $subject = $field;
+  }
+  $pattern = '%(<div class="field-item\s.+?">.+?)(</div>)%';
+  $replacement = '$1 $2';
+  $subject = trim(preg_replace('/\s+/', ' ', $subject));
+  $subject = str_replace("</tr>", "</tr>\n", $subject);
+  $subject = str_replace("</th>", " | </th>", $subject);
+  $subject = str_replace("</td>", " | </td>", $subject);
+  
+  $subject = trim(preg_replace($pattern, $replacement, $subject));
+  
+  //return $subject;
+  $subject = strip_tags($subject);
+  $subject = str_replace(" Edit Delete", "", $subject);
+  $subject = str_replace(" | Operations |", "", $subject);
+  $subject = str_replace("| |", "", $subject);
+  
+  
+  return $subject;
+  
+  
+}
+
