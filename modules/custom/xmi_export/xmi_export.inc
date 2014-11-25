@@ -2,6 +2,7 @@
 
 function xmi_export_page() {
     $objects = get_all_node_objects(null);
+    dsm($objects);
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
 

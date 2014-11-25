@@ -20,8 +20,17 @@
                 <?php else: ?>
                 <para>This object extends <link linkend="ddi4-<?php print $object['extends_uuid']; ?>"><?php print $object['extends']; ?></link></para>
                 <?php endif;?>
+                
             </section>
             <?php endif;?>
+            <?php if($object["is_abstract"]): ?>
+            <section  revision="" role="is_abstract">
+                <title>Abstract</title>
+                <para>This class is abstract</para>
+            </section>
+            <?php endif;?>
+            
+            
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
                 <title>Definition</title>
                 <para>

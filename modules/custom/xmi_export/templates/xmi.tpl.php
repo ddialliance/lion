@@ -2,6 +2,7 @@
     <!-- NOTE: exporter have to be "Enterprise Architect", EA wont read it if set do eg. Drupal -->
     <xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
     <uml:Model xmi:type="uml:Model" xmi:id="42" name="ddi4">
+        <!-- DDI4 packages -->
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_model" name="Class Model (Exported from Drupal)" visibility="public">
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <packagedElement xmi:type="uml:Package" xmi:id="<?php print $package; ?>" name="<?php print $package; ?>" visibility="public">
@@ -59,6 +60,10 @@
                     <?php endforeach; ?>
                 </packagedElement>
             <?php endforeach; ?>
+        </packagedElement>
+        <!-- DDI4 views -->
+        <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)" visibility="public">
+            
         </packagedElement>
     </uml:Model>
     <xmi:Extension extender="Enterprise Architect" extenderID="6.5">
