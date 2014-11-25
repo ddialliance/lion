@@ -30,6 +30,19 @@
             </section>
             <?php endif;?>
             
+            <?php if(!empty($object["ddi_3_2"])): ?>
+            <section  revision="" role="ddi_3_2">
+                <title>Based on DDI 3.2</title>
+                <para><?php print $object["ddi_3_2"];?></para>
+            </section>
+            <?php endif;?>            
+    
+            <?php if(!empty($object["gsim"])): ?>
+            <section  revision="" role="gsim">
+                <title>Corresponds to GSIM</title>
+                <para><?php print $object["gsim"];?></para>
+            </section>
+            <?php endif;?>                   
             
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
                 <title>Definition</title>

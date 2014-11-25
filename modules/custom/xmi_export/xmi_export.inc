@@ -161,6 +161,8 @@ function node_to_xmi_array($node) {
     $xmi['name'] = $node->title;
     $xmi['nid'] = $node->nid;
     $xmi['is_abstract'] = _get_value($node->field_is_abstract);
+    $xmi['ddi_3_2'] = _get_value($node->field_ddi_3_2);
+    $xmi['gsim'] = _get_value($node->field_gsim);
     $xmi['definition']  = _get_value($node->body);
     
     $extends_info = _get_reference_info($node->field_extends);
