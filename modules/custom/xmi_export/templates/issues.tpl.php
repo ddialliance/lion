@@ -1,5 +1,5 @@
 <p>
-    <?php if($errors == 0 && $warnings): ?>
+    <?php if($errors == 0 && $warnings == 0): ?>
     We have <span style="color:#F2000D;">0</span> errors and <span style="color:#D77D00;">0</span> warnings.
     Have a break and take a look at a random cat: 
     <a href="http://random.cat">http://random.cat</a>

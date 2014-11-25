@@ -38,6 +38,15 @@ function validate_objects(){
 }
 
 function validate_object($object){
+    $validPackages = array("Review", "Toss", "Keep", "Deleted");
+    
+    if(!empty($object["extends"])){
+        $pack = getObjectsPackage($object["extends"]);
+        if(in_array($pack, $validPackages)){
+            $object["errors"][] = "Extends '".$object["extends"]."' in package '".$pack."'";
+        }
+    }
+    
     //check if first letter in object name is upper case
     if(!starts_with_upper($object["name"])){
         $object["errors"][] = "Object '".$object["name"]."' name first character should be upper case";
@@ -69,6 +78,13 @@ function validate_object($object){
             $object["errors"][] = "Property '".$property["name"]."' contains non alpha characters";
         }
         
+        if(!empty($property["datatype"])){
+            $pack = getObjectsPackage($property["datatype"]);
+            if(in_array($pack, $validPackages)){
+                $object["errors"][] = "Property '".$property["name"]."' uses datatype '".$property["datatype"]."' in package '".$pack."'";
+            }
+        }        
+        
         if (strlen(trim($property["datatype"])) == 0){
             $object["errors"][] = "Property '".$property["name"]."' have no datatype";
         }
@@ -95,6 +111,13 @@ function validate_object($object){
         if (strlen(trim($relationship["target_object"])) == 0){
             $object["errors"][] = "Relationship '".$relationship["name"]."' have no target object";
         }
+        
+        if(!empty($relationship["target_object"])){
+            $pack = getObjectsPackage($relationship["target_object"]);
+            if(in_array($pack, $validPackages)){
+                $object["errors"][] = "Relationship '".$relationship["name"]."' have target object '".$relationship["target_object"]."' in package '".$pack."'";
+            }
+        }        
 
         if (strlen(trim($relationship["type"])) == 0){
             $object["errors"][] = "Relationship '".$relationship["name"]."' have no type";
@@ -119,4 +142,15 @@ function startsWith($haystack, $needle){
 function starts_with_upper($str) {
     $chr = mb_substr ($str, 0, 1, "UTF-8");
     return mb_strtolower($chr, "UTF-8") != $chr;
+}
+
+function getObjectsPackage($title){
+    
+    $result = db_query("SELECT title FROM field_data_field_package fp
+                            INNER JOIN node n ON n.nid = fp.field_package_target_id
+                            WHERE fp.entity_id = (SELECT nid FROM node WHERE title = :title LIMIT 1)
+                            AND fp.deleted = 0", array(":title"=> $title));  
+
+    return $result->fetchField();
+
 }
