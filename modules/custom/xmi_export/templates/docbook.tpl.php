@@ -54,33 +54,32 @@
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
                 <title>Properties</title>
                 <?php foreach($object['properties'] as $item):?>
-                <table label="<?php print $object['name']; ?>" frame="all">
-                    <title/>
-                    <tgroup cols="2">
-                        <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="7.87*"/>
-                        
-                        <tbody>
-                            <row>
-                                <entry>Name</entry>
-                                <entry role="name"><?php print $item['name']; ?></entry>
-                            </row>
-                            <row>
-                                <entry>Datatype</entry>
-                                <entry role="datatype"><?php if(array_key_exists('datatype',$item)){print $item['datatype'];} ?></entry>
-                            </row>
-                            <row>
-                                <entry>Cardinality</entry>
-                                <entry role="cardinality"><?php if(array_key_exists('datatype',$item)){print $item['cardinality'];} ?></entry>
-                            </row>
-                            <row>
-                                <entry role="description" namest="c1" nameend="c2">
-                                    <?php if(array_key_exists('description',$item)){print $item['description'];} ?>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>                    
-                </table>
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties-<?php print $item['name']; ?>">
+                    <title><?php print $item['name']; ?></title>
+                    <informaltable label="<?php print $object['name']; ?>" frame="all">
+
+                        <tgroup cols="2">
+                            <colspec colname="c1" colnum="1" colwidth="1*"/>
+                            <colspec colname="c2" colnum="2" colwidth="7.87*"/>
+
+                            <tbody>
+                                <row>
+                                    <entry>Datatype</entry>
+                                    <entry role="datatype"><?php if(array_key_exists('datatype',$item)){print $item['datatype'];} ?></entry>
+                                </row>
+                                <row>
+                                    <entry>Cardinality</entry>
+                                    <entry role="cardinality"><?php if(array_key_exists('datatype',$item)){print $item['cardinality'];} ?></entry>
+                                </row>
+                                <row>
+                                    <entry role="description" namest="c1" nameend="c2">
+                                        <?php if(array_key_exists('description',$item)){print $item['description'];} ?>
+                                    </entry>
+                                </row>
+                            </tbody>
+                        </tgroup>                    
+                    </informaltable>
+                </section>                    
                 <?php endforeach;?>
             </section>
             <?php endif;?>
@@ -89,45 +88,43 @@
                 <title>Relationships</title>
                 
                 <?php foreach($object['relationships'] as $item):?>
-                <table frame="all">
-                    <title/>
-                    <tgroup cols="2">
-                        <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="7.87*"/>
-                        
-                        <tbody>
-                            <row>
-                                <entry>Name</entry>
-                                <entry><?php print $item['name'];?></entry>
-                            </row>
-                            <row>
-                                <entry>Target</entry>
-                                <?php if($item['target_object']):?>
-                                <entry><link linkend="ddi4-<?php print $item['target_object_uuid'];?>"><?php print $item['target_object'];?></link></entry>
-                                <?php else: ?>
-                                <entry>NOT DEFINED</entry>
-                                <?php endif;?>
-                            </row>
-                            <row>
-                                <entry>Type</entry>
-                                <entry><?php print $item['type'];?></entry>
-                            </row>
-                            <row>
-                                <entry>Source Cardinality</entry>
-                                <entry><?php print $item['source_cardinality'];?></entry>
-                            </row>
-                            <row>
-                                <entry>Target Cardinality</entry>
-                                <entry><?php print $item['target_cardinality'];?></entry>
-                            </row>                            
-                            <row>
-                                <entry namest="c1" nameend="c2">
-                                    <?php print $item['description'];?>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                </table>
+                <section  xml:id="ddi4-<?php print $object['uuid']; ?>-relationships-<?php print $item['name']; ?>">
+                    <title><?php print $item['name'];?></title>
+                    <informaltable frame="all">
+                        <tgroup cols="2">
+                            <colspec colname="c1" colnum="1" colwidth="1*"/>
+                            <colspec colname="c2" colnum="2" colwidth="7.87*"/>
+
+                            <tbody>
+                                <row>
+                                    <entry>Target</entry>
+                                    <?php if($item['target_object']):?>
+                                    <entry><link linkend="ddi4-<?php print $item['target_object_uuid'];?>"><?php print $item['target_object'];?></link></entry>
+                                    <?php else: ?>
+                                    <entry>NOT DEFINED</entry>
+                                    <?php endif;?>
+                                </row>
+                                <row>
+                                    <entry>Type</entry>
+                                    <entry><?php print $item['type'];?></entry>
+                                </row>
+                                <row>
+                                    <entry>Source Cardinality</entry>
+                                    <entry><?php print $item['source_cardinality'];?></entry>
+                                </row>
+                                <row>
+                                    <entry>Target Cardinality</entry>
+                                    <entry><?php print $item['target_cardinality'];?></entry>
+                                </row>                            
+                                <row>
+                                    <entry namest="c1" nameend="c2">
+                                        <?php print $item['description'];?>
+                                    </entry>
+                                </row>
+                            </tbody>
+                        </tgroup>
+                    </informaltable>
+                    </section>
                 <?php endforeach;?>
             </section>
             <?php endif; ?>
