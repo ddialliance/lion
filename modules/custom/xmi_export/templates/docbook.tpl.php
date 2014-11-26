@@ -43,7 +43,13 @@
             <?php if($object["rdf_mapping"]): ?>
             <section  revision="" role="ddi_3_2">
                 <title>RDF Mapping</title>
-                <para>some stuff</para>
+                
+                <?php foreach($object["rdf_mapping"] as $mapping): ?>
+                <para>    
+                    
+                </para>
+                <?php endforeach;?>
+                
             </section>
             <?php endif;?>  
             
@@ -65,11 +71,9 @@
                 <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties-<?php print $item['name']; ?>">
                     <title><?php print $item['name']; ?></title>
                     <informaltable frame="all">
-
                         <tgroup cols="2">
                             <colspec colname="c1" colnum="1" colwidth="1*"/>
                             <colspec colname="c2" colnum="2" colwidth="7.87*"/>
-
                             <tbody>
                                 <row>
                                     <entry>Datatype</entry>

@@ -1,45 +1,5 @@
 <?php
 
-function graph_json() {
-    
-    $color = array('FF7400', 'FFAA00', 'FF0000', '009999', '33CCCC', 'FF7373', 'FFD073', 'FFB273', 'A60000');
-
-    require_once('xmi_export.inc');
-    $objects = get_all_node_objects();
-
-    $json = array();
-
-    foreach ($objects as $package => $classes) {
-
-        foreach ($classes as $class) {
-            $o = new stdClass();
-            $o->id = $class['name'];
-            $json['nodes'][] = array('data' => $o);
-
-            if ($class['extends']) {
-                $o = new stdClass();
-                $o->class = $class['name'];
-                $o->extends = $class['extends'];
-                $json['extensions'][] = array('data' => $o);
-            }
-
-
-            foreach ($class['relationships'] as $relation) {
-                if ($relation['target_object']) {
-                    $o = new stdClass();
-                    $o->source = $class['name'];
-                    $o->target = $relation['target_object'];
-                    $json['edges'][] = array('data' => $o);
-                }
-            }
-        }
-    }
-
-    header('Content-Type: application/json');
-    print json_encode($json);
-    exit(0);
-}
-
 function dot_url_list(){
     global $base_url;
     require_once('xmi_export.inc');
@@ -66,7 +26,6 @@ function dot_package_export($package){
 }
 
 function dot_package_export_image($package, $format){
-    
     $graph = _generate_dot($package);
     
     $output = graphviz_filter_filterproc('
@@ -88,8 +47,7 @@ function dot_package_export_image($package, $format){
             header("Content-Type: image/svg+xml");
             break;
     }
-    
-    
+       
     foreach($matches[0] as $url){
         if(substr($url, -8) === ".out.".$format){
             print file_get_contents($url);
@@ -100,17 +58,30 @@ function dot_package_export_image($package, $format){
     exit(0);
 }
 
-function _generate_dot($collection = null, $type = "package") {
+function _generate_dot($entityTitle = null, $type = "package") {
     global $base_url;
 
     set_time_limit(250);
     ini_set('memory_limit','512M');
     require_once('xmi_export.inc');
-    $objects = get_all_node_objects($collection, $type);
+    
+    if($type == "package" || $type == "view"){
+        $objects = get_all_node_objects($entityTitle, $type);
+    }else if($type == "object"){
+        
+    }
 
+    return _generate_dot_graph($objects);
+}
 
+function _generate_dot_graph($objects){
     $output .= 'digraph ddi4 {
         rankdir = "LR";
+        layout=dot;
+        overlap=false; //false, compress, ...
+        sep=true;
+        compound=true;
+
         graph [
             fontname = "helvetica"
         ];
@@ -121,11 +92,14 @@ function _generate_dot($collection = null, $type = "package") {
             fontsize = "12"
             shape = "record"
             align = "left"
+            mindist=0.5
         ];
         
         edge [
             fontname = "helvetica"
             fontsize = "10"
+            minlen=1
+            mode="ipsep"
         ];
 ';
 
@@ -216,8 +190,9 @@ function _generate_dot($collection = null, $type = "package") {
     }
     $output .= '}';
     
-    return $output;
+    return $output;    
 }
+
 
 function dot_graph_page() {
     drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/viz/viz.js', 'file');

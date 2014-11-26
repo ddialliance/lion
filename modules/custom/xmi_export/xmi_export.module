@@ -73,41 +73,25 @@ function xmi_export_menu() {
         'page arguments' => array(1, 'png'),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'graph.inc',
-    );   
+    );
 
-     $items['package/%/svg'] = array(
+    $items['package/%/svg'] = array(
         'title' => 'DOT dump per package',
         'page callback' => 'dot_package_export_image',
         'access arguments' => array('access content'),
         'page arguments' => array(1, 'svg'),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'graph.inc',
-    );     
-     
-    $items['objects.json'] = array(
-        'title' => 'JSON data for graph (not used)',
-        'page callback' => 'graph_json',
-        'access arguments' => array('access content'),
-        'type' => MENU_CALLBACK,
-        'file' => 'graph.inc',
     );
-
+    
     $items['objects.dot'] = array(
         'title' => 'docbook.html',
         'page callback' => 'graph_dot',
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
         'file' => 'graph.inc',
-    );    
-    
-    $items['graph'] = array(
-        'title' => 'Graph of all objects',
-        'page callback' => 'graph_page',
-        'access arguments' => array('access content'),
-        'type' => MENU_CALLBACK,
-        'file' => 'graph.inc',
     );
-    
+        
     $items['graph/dot'] = array(
         'title' => 'Graph in dot',
         'page callback' => 'dot_graph_page',
