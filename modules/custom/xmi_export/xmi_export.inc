@@ -34,7 +34,10 @@ function get_all_node_objects($collection = null, $type = "package") {
                                 WHERE n.type = :type AND n.status = :status
                                 AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
                                                 INNER JOIN node n ON n.nid = f.field_package_target_id 
-                                                WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test') AND f.deleted = 0
+                                                INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
+                                                
+                                                AND f.deleted = 0
+                                                AND df.field_include_in_build_value = 1 
                                              )
                                 ", array(
                                     ':type' => 'ddiobject',
@@ -86,16 +89,29 @@ function get_nodes($result) {
         if ($node->field_property) {
             $node->PROPERTIES = array();
             foreach ($node->field_property['und'] as $item) {
-                $node->PROPERTIES[] = field_collection_item_load($item['value']);
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];
+                $node->PROPERTIES[] = $f; 
             }
         }
 
         if ($node->field_relationship) {
             $node->RELATIONSHIP = array();
             foreach ($node->field_relationship['und'] as $item) {
-                $node->RELATIONSHIP[] = field_collection_item_load($item['value']);
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];                
+                $node->RELATIONSHIP[] = $f;
             }
         }
+        
+        if ($node->field_rdf_mapping) {
+            $node->RDF_MAPPING = array();
+            foreach ($node->field_rdf_mapping['und'] as $item) {
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];                
+                $node->RDF_MAPPING[] = $f;
+            }
+        }        
 
        $arr = node_to_xmi_array($node);
 
@@ -177,19 +193,19 @@ function node_to_xmi_array($node) {
         if ($node->PROPERTIES) {
             $xmi['properties'] = array();
             foreach ($node->PROPERTIES as $prop) {
+                $property = array('name'=>"", 'description'=>"", 'cardinality'=>"", 'datatype'=>"");
+
+                $property['name']           = _get_value($prop->field_property_name);
+                $property['description']    = _get_value($prop->field_property_description_long);
+                $property['cardinality']    = _get_value($prop->field_property_cardinality);
+                $property['entity_id']      = $prop->entity_id;
                 
-                    $property = array('name'=>"", 'description'=>"", 'cardinality'=>"", 'datatype'=>"");
+                $datatype_info = _get_reference_info($prop->field_property_datatype);
+                $property['datatype']       = $datatype_info['title'];
+                $property['datatype_uuid']       = $datatype_info['uuid'];
 
-                    $property['name']           = _get_value($prop->field_property_name);
-                    $property['description']    = _get_value($prop->field_property_description_long);
-                    $property['cardinality']    = _get_value($prop->field_property_cardinality);
+                $xmi['properties'][$property['name']] = $property;
 
-                    $datatype_info = _get_reference_info($prop->field_property_datatype);
-                    $property['datatype']       = $datatype_info['title'];
-                    $property['datatype_uuid']       = $datatype_info['uuid'];
-
-                    $xmi['properties'][$property['name']] = $property;
-                
             }
         }
     }
@@ -202,6 +218,7 @@ function node_to_xmi_array($node) {
             $relationship['name']               = _get_value($rel->field_relationship_name);
             $relationship['source_cardinality'] = _get_value($rel->field_relationship_source_cardin);
             $relationship['target_cardinality'] = _get_value($rel->field_relationship_target_cardin);
+            $relationship['entity_id']          = $rel->entity_id;
             $relationship['type']               = _get_value($rel->field_relationship_type);
             
             //composite
@@ -227,6 +244,19 @@ function node_to_xmi_array($node) {
             
             $xmi['relationships'][$relationship['name']] = $relationship;
         }
+    }
+    
+    if (property_exists($node, 'RDF_MAPPING')) {
+        if ($node->RDF_MAPPING) {
+            $xmi['rdf_mapping'] = array();
+            foreach ($node->RDF_MAPPING as $m) {
+                $mapping = array('label'=>"",'type'=>"", 'uri'=>"");
+                $mapping['label'] = _get_value($m->field_mapping_label);
+                $mapping['type']  = _get_value($m->field_mapping_type);
+                $mapping['uri']   = _get_value($m->field_mapping_uri);
+                 $xmi['rdf_mapping'][] = $mapping;
+            }
+        }    
     }
 
     return $xmi;

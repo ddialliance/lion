@@ -4,6 +4,9 @@
         <author>
             <orgname>the Data Documentation Initiative</orgname>
         </author>
+        <date><?php print date("Y-m-d");?></date>
+        <legalnotice>Licence of all documentation is LGPL v3</legalnotice>
+        
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
@@ -37,6 +40,13 @@
             </section>
             <?php endif;?>            
     
+            <?php if($object["rdf_mapping"]): ?>
+            <section  revision="" role="ddi_3_2">
+                <title>RDF Mapping</title>
+                <para>some stuff</para>
+            </section>
+            <?php endif;?>  
+            
             <?php if(!empty($object["gsim"])): ?>
             <section  revision="" role="gsim">
                 <title>Corresponds to GSIM</title>
@@ -46,9 +56,7 @@
             
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-definition"  revision="" role="definition">
                 <title>Definition</title>
-                <para>
-                    <?php if(array_key_exists('definition',$object)){print $object['definition'];} ?>
-                </para>
+                <para><?php if(array_key_exists('definition',$object)){print $object['definition'];} ?></para>
             </section>
             <?php if(count($object['properties']) > 0): ?>
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
@@ -56,7 +64,7 @@
                 <?php foreach($object['properties'] as $item):?>
                 <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties-<?php print $item['name']; ?>">
                     <title><?php print $item['name']; ?></title>
-                    <informaltable label="<?php print $object['name']; ?>" frame="all">
+                    <informaltable frame="all">
 
                         <tgroup cols="2">
                             <colspec colname="c1" colnum="1" colwidth="1*"/>
@@ -71,11 +79,11 @@
                                     <entry>Cardinality</entry>
                                     <entry role="cardinality"><?php if(array_key_exists('datatype',$item)){print $item['cardinality'];} ?></entry>
                                 </row>
+                                <?php if(!empty(trim($item['description']))): ?>
                                 <row>
-                                    <entry role="description" namest="c1" nameend="c2">
-                                        <?php if(array_key_exists('description',$item)){print $item['description'];} ?>
-                                    </entry>
+                                    <entry role="description" namest="c1" nameend="c2"><?php print trim($item['description']); ?></entry>
                                 </row>
+                                <?php endif;?>
                             </tbody>
                         </tgroup>                    
                     </informaltable>
@@ -115,12 +123,12 @@
                                 <row>
                                     <entry>Target Cardinality</entry>
                                     <entry><?php print $item['target_cardinality'];?></entry>
-                                </row>                            
+                                </row>   
+                                <?php if(!empty(trim($item['description']))): ?>
                                 <row>
-                                    <entry namest="c1" nameend="c2">
-                                        <?php print $item['description'];?>
-                                    </entry>
+                                    <entry namest="c1" nameend="c2"><?php print trim($item['description']);?></entry>
                                 </row>
+                                <?php endif;?>
                             </tbody>
                         </tgroup>
                     </informaltable>

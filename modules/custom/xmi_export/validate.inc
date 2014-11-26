@@ -38,11 +38,11 @@ function validate_objects(){
 }
 
 function validate_object($object){
-    $validPackages = array("Review", "Toss", "Keep", "Deleted");
+    $invalidPackages = array("Review", "Toss", "Keep", "Deleted");
     
     if(!empty($object["extends"])){
         $pack = getObjectsPackage($object["extends"]);
-        if(in_array($pack, $validPackages)){
+        if(in_array($pack, $invalidPackages)){
             $object["errors"][] = "Extends '".$object["extends"]."' in package '".$pack."'";
         }
     }
@@ -80,7 +80,7 @@ function validate_object($object){
         
         if(!empty($property["datatype"])){
             $pack = getObjectsPackage($property["datatype"]);
-            if(in_array($pack, $validPackages)){
+            if(in_array($pack, $invalidPackages)){
                 $object["errors"][] = "Property '".$property["name"]."' uses datatype '".$property["datatype"]."' in package '".$pack."'";
             }
         }        
@@ -114,7 +114,7 @@ function validate_object($object){
         
         if(!empty($relationship["target_object"])){
             $pack = getObjectsPackage($relationship["target_object"]);
-            if(in_array($pack, $validPackages)){
+            if(in_array($pack, $invalidPackages)){
                 $object["errors"][] = "Relationship '".$relationship["name"]."' have target object '".$relationship["target_object"]."' in package '".$pack."'";
             }
         }        
