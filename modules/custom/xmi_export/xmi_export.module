@@ -132,6 +132,15 @@ function xmi_export_menu() {
         'file' => 'validate.inc',
     );
     
+    $items['mapping/%'] = array(
+        'title' => 'Mappings',
+        'page callback' => 'get_mappings',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'mapping.inc',
+    );
+    
 
     return $items;
 }
@@ -151,6 +160,10 @@ function xmi_export_theme() {
             'path' => $path,
             'template' => 'issues',
             'variables' => array('objects' => NULL),
+        ), 'mappings' => array(
+            'path' => $path,
+            'template' => 'mappings',
+            'variables' => array('mappings' => NULL),
         ), 'xmi_cardinality' => array(
             'path' => $path,
             'template' => 'xmi_cardinality',
