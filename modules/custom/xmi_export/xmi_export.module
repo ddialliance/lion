@@ -66,20 +66,11 @@ function xmi_export_menu() {
         'file' => 'graph.inc',
     );    
 
-     $items['package/%/png'] = array(
+     $items['package/%/%'] = array(
         'title' => 'DOT dump per package',
         'page callback' => 'dot_package_export_image',
         'access arguments' => array('access content'),
-        'page arguments' => array(1, 'png'),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'graph.inc',
-    );
-
-    $items['package/%/svg'] = array(
-        'title' => 'DOT dump per package',
-        'page callback' => 'dot_package_export_image',
-        'access arguments' => array('access content'),
-        'page arguments' => array(1, 'svg'),
+        'page arguments' => array(1, 2),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'graph.inc',
     );

@@ -46,6 +46,9 @@ function dot_package_export_image($package, $format){
         case "svg":
             header("Content-Type: image/svg+xml");
             break;
+        default:
+            header("Content-Type: image/svg+xml");
+            $format = "svg";
     }
        
     foreach($matches[0] as $url){
@@ -176,7 +179,8 @@ function _generate_dot_graph($objects){
                         case 'Composition':
                             $arrow = 'diamond';
                             $side = 'r';
-                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            
+                            $output .= "\t" . $prefix.$relation['target_object']  . ' -> ' . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
                             $arrow = 'open';
@@ -206,43 +210,3 @@ function dot_graph_page() {
     //return theme('dot', array('dot' => _generate_dot()));
     return 'temporarily out of order';
 }
-
-
-function graph_page() {
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/raphael-min.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_graffle.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_graph.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_algorithms.js', 'file');
-    $js = '
-           jQuery(document).ready(function() {
-            var g = new Graph();
-            g.edgeFactory.template.style.directed = true;        
-
-            jQuery.getJSON("/objects.json", function(data) {
-               jQuery.each(data.nodes, function(i,node){
-                 console.log(node.data.id);
-                 g.addNode(node.data.id);
-               });
-               jQuery.each(data.edges, function(i,edge){
-                 g.addEdge(edge.data.source, edge.data.target);
-               });
-               jQuery.each(data.extensions, function(i,extend){
-                 g.addEdge(extend.data.extends, extend.class);
-               });
-               //var layouter = new Graph.Layout.Ordered(g, topological_sort(g));
-               var layouter = new Graph.Layout.Spring(g);
-               layouter.layout();
-               var renderer = new Graph.Renderer.Raphael("canvas", g, 1000, 900);
-            });
-          });';
-    drupal_add_js($js, 'inline');
-    return '<div id="canvas"></div><br/>Rendered using <a href="http://www.graphdracula.net/">Dracula Graph Library</a>';
-}
-
-function graph_arbor_page() {
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/arbor/arbor.js', 'file');
-
-    return '<canvas id="viewport" width="800" height="600"></canvas>';
-}
-
-?>
