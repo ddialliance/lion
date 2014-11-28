@@ -3,18 +3,33 @@
     <xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
     <uml:Model xmi:type="uml:Model" xmi:id="42" name="ddi4">
         <!-- DDI4 packages -->
-        <packagedElement xmi:type="uml:Package" xmi:id="ddi4_model" name="Class Model (Exported from Drupal)" visibility="public">
+        <packagedElement xmi:type="uml:Package" xmi:id="ddi4_model" name="Class Model (Exported from Drupal)">
             <?php foreach ($objects as $package => $ddiobjects): ?>
-                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $package; ?>" name="<?php print $package; ?>" visibility="public">
+                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $package; ?>" name="<?php print $package; ?>">
+                    <?php if(array_key_exists($package, $datatypes)): ?>
+                    <!-- Datatypes -->
+                    <?php foreach($datatypes[$package] as $datatype): ?>
+                        <?php if(array_key_exists('enumeration', $datatype)): ?>
+                            <packagedElement xmi:type="uml:Enumeration" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>">
+                                <?php foreach($datatype['enumeration'] as $enumeration): ?>
+                                <ownedLiteral xmi:type="uml:EnumerationLiteral" name="<?php print $enumeration['value']; ?>"/>
+                                <?php endforeach; ?>
+                            </packagedElement>
+                        <?php else: ?>
+                            <packagedElement xmi:type="uml:DataType" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>" visibility="public"/>
+                        <?php endif;?>
+                    <?php endforeach; ?>
+                    <!-- End Datatypes -->
+                    <?php endif; ?>
                     <?php foreach ($ddiobjects as $object): ?>
-                        <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" isAbstract="<?php print $object['is_abstract']; ?>" >
+                        <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
                             <?php if ($object['extends']): ?>
                                 <!-- extends -->
                                 <generalization xmi:type="uml:Generalization" xmi:id="<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" general="<?php print $object['extends']; ?>"/>
                             <?php endif; ?>
                             <!-- properties -->
                             <?php foreach ($object['properties'] as $item): ?>
-                                <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $item['name']; ?>" visibility="public">
+                                <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
                                     <?php if (array_key_exists('datatype', $item)): ?>
                                         <?php print _render_datatype($item['datatype']); ?>
                                     <?php endif; ?>
@@ -29,7 +44,7 @@
                                 <!-- relationships -->
                                 <?php foreach ($object['relationships'] as $relation): ?>
                                     <?php if ($relation['target_object']): ?>
-                                        <ownedAttribute xmi:type="uml:Property" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" visibility="public" aggregation="none">
+                                        <ownedAttribute xmi:type="uml:Property" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association">
                                             <?php if (array_key_exists('target_object', $relation)): ?>
                                                 <type xmi:idref="<?php print $relation['target_object']; ?>"/>
                                             <?php endif; ?>
@@ -44,14 +59,14 @@
                         <?php foreach ($object['relationships'] as $relation): ?>
                             <?php if ($relation['target_object']): ?>
                     <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
-                                <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>" visibility="public">
+                                <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>">
 
                                     <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
                                     <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target"/>
-                                    <ownedEnd xml:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" visibility="public" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="<?php print $relation['xmi_type']; ?>">
+                                    <ownedEnd xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" <?php if($relation['xmi_type'] != "none"):?> aggregation="<?php print $relation['xmi_type']; ?>"<?php endif;?>>
                                         <type xmi:idref="<?php print $object['name']; ?>"/>
                                         <?php if (array_key_exists('target_cardinality', $relation)): ?>
-                                            <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name'], 'cardinality' => $relation['target_cardinality'])); ?>
+                                            <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name']."_packagedElement", 'cardinality' => $relation['target_cardinality'])); ?>
                                         <?php endif; ?> 
                                     </ownedEnd>
                                 </packagedElement>
@@ -62,7 +77,7 @@
             <?php endforeach; ?>
         </packagedElement>
         <!-- DDI4 views -->
-        <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)" visibility="public">
+        <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)">
             
         </packagedElement>
     </uml:Model>
@@ -81,7 +96,7 @@
             <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="<?php print $object['name'];?>" scope="package">
                 <model package="<?php print $package;?>" tpos="0" ea_localid="<?php print $object['nid'];?>" ea_eleType="element"/>
                 <!-- the documentation in escaped html -->
-                <properties documentation="<?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition'], ENT_QUOTES);} ?>"  isSpecification="false" sType="Class" nType="0" scope="package" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+                <properties documentation="<?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition'], ENT_QUOTES);} ?>"  isSpecification="false" sType="Class" nType="0" scope="package" isRoot="false" isLeaf="false" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?> isActive="false"/>
                 <extendedProperties tagged="0" package_name="<?php print $package;?>"/>
                 <code gentype="Java"/>
                 
@@ -89,7 +104,7 @@
                 <attributes>
                     
                     <?php foreach ($object['properties'] as $item): ?>
-                        <attribute xmi:idref="<?php print $item['name']; ?>" name="<?php print $item['name']; ?>" scope="Public">
+                        <attribute xmi:idref="<?php print $object['name']; ?>_<?php print $item['name']; ?>" name="<?php print $item['name']; ?>" scope="Public">
                                 <initial/>
                                 <documentation value="<?php if(array_key_exists('description',$item)){print htmlspecialchars($item['description'], ENT_QUOTES);} ?>"/>
                                 
@@ -141,10 +156,9 @@
                             <connector xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source">
                                 <source xmi:idref="<?php print $object['name']; ?>">
                                         <model ea_localid="1621" type="Class" name="<?php print $object['name']; ?>"/>
-                                        <role visibility="Public"/>
-                                        <type aggregation="none"/>
+                                        
                                         <constraints/>
-                                        <modifiers isOrdered="false" isNavigable="false"/>
+                                        <modifiers isNavigable="false"/>
                                         <style/>
                                         <documentation/>
                                         <xrefs/>
@@ -152,10 +166,9 @@
                                 </source>
                                 <target xmi:idref="<?php print $relation['name']; ?>">
                                         <model ea_localid="1620" type="Class" name="?php print $relation['name']; ?>"/>
-                                        <role visibility="Public"/>
-                                        <type aggregation="none"/>
+                                        
                                         <constraints/>
-                                        <modifiers isOrdered="false" isNavigable="false"/>
+                                        <modifiers isNavigable="false"/>
                                         <style/>
                                         <documentation/>
                                         <xrefs/>

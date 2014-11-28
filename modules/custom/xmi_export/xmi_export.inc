@@ -3,6 +3,10 @@
 function xmi_export_page() {
     $objects = get_all_node_objects(null);
     dsm($objects);
+    
+    require_once('datatypes.inc');
+    dsm(get_datatypes());
+    
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
 
@@ -22,7 +26,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                                     FROM field_data_field_object_reference f
                                     INNER JOIN {node} n ON n.nid = f.entity_id
                                     WHERE n.status = :status
-                                    AND n.title = :title
+                                    AND LOWER(n.title) = LOWER(:title)
                                 ", array(
                                     ':status' => 1,
                                     ':title' => $entityTitle
@@ -67,7 +71,8 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
 function get_all_packages(){
     $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
                         FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
-                        WHERE n.title NOT IN('Deleted', 'Keep', 'Toss', 'Review', 'Achim-Test')
+                        INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
+                        WHERE df.field_include_in_build_value = 1 
                         AND n.type = :type AND n.status = :status", array(
                             ':type' => 'package',
                             ':status' => 1,
@@ -131,6 +136,8 @@ function get_nodes_by_status($tid) {
 }
 
 function xmi_export_xmi($package = null) {
+    require_once('datatypes.inc');
+    
     $objects = get_all_node_objects($package);
     if($package != null){
         if(array_key_exists($package, $objects)){
@@ -142,7 +149,10 @@ function xmi_export_xmi($package = null) {
     
     header("Content-type: text/xml; charset=utf-8");
     
-    print theme('xmi', array('objects' => $objects));
+    $datatypes =  get_datatypes();
+    $objects['Primitives'] = array();
+    
+    print theme('xmi', array('objects' => $objects, 'datatypes' => $datatypes));
     exit(0);
 }
 
@@ -253,7 +263,7 @@ function node_to_xmi_array($node) {
                 $mapping['label'] = _get_value($m->field_mapping_label);
                 $mapping['type']  = _get_value($m->field_mapping_type);
                 $mapping['uri']   = _get_value($m->field_mapping_uri);
-                 $xmi['rdf_mapping'][] = $mapping;
+                $xmi['rdf_mapping'][] = $mapping;
             }
         }    
     }
@@ -309,9 +319,21 @@ function _get_reference_info($field){
  */
 function _render_datatype($type){
     $type = trim($type);
-    $output = '<type xmi:type="'.$type.'"/>';
+    $output = '<type xmi:idref="'.$type.'"/>';
     
-    if(substr($type, 0, 3 ) === "xs:"){
+    if(substr($type, 0, 4) === "xml:"){
+        switch($type){
+            case "xml:lang":
+                $type = "xs:language";
+                break;
+            case "xml:space":
+                $type = "xs:whiteSpace";
+                break;
+        }
+        
+    }
+    
+    if(substr($type, 0, 3) === "xs:"){
         switch($type){
             case "xs:string":
             case "xs:boolean":
@@ -324,6 +346,9 @@ function _render_datatype($type){
             case "xs:float":
             case "xs:decimal":
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
+                break;
+            case "xs:language":
+                $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Language"/><!-- No UML datatype for xs:language? -->';
                 break;
             default:
                  $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"/>';
