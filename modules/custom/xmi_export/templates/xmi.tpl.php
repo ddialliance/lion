@@ -1,5 +1,8 @@
-<xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
-    <!-- NOTE: exporter have to be "Enterprise Architect", EA wont read it if set do eg. Drupal -->
+<xmi:XMI xmi:version="2.4.1" xmlns:uml="http://www.omg.org/spec/UML/20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701">
+    <!-- 
+        NOTE: exporter have to be "Enterprise Architect", EA wont read it if set do eg. Drupal 
+        We will play along to get "Enterprise Architect" happy
+    -->
     <xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
     <uml:Model xmi:type="uml:Model" xmi:id="42" name="ddi4">
         <!-- DDI4 packages -->
@@ -16,7 +19,7 @@
                                 <?php endforeach; ?>
                             </packagedElement>
                         <?php else: ?>
-                            <packagedElement xmi:type="uml:DataType" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>" visibility="public"/>
+                            <packagedElement xmi:type="uml:DataType" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>"/>
                         <?php endif;?>
                     <?php endforeach; ?>
                     <!-- End Datatypes -->
@@ -27,6 +30,7 @@
                                 <!-- extends -->
                                 <generalization xmi:type="uml:Generalization" xmi:id="<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" general="<?php print $object['extends']; ?>"/>
                             <?php endif; ?>
+                            <?php if(array_key_exists('properties', $object)): ?>
                             <!-- properties -->
                             <?php foreach ($object['properties'] as $item): ?>
                                 <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
@@ -38,6 +42,7 @@
                                     <?php endif; ?>
                                 </ownedAttribute>
                             <?php endforeach; ?>
+                            <?php endif;?>
 
 
                             <?php if (array_key_exists('relationships', $object)): ?>
@@ -78,7 +83,9 @@
         </packagedElement>
         <!-- DDI4 views -->
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)">
-            
+            <?php foreach($views as $view): ?>
+                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>" visibility="public"/>
+            <?php endforeach; ?>
         </packagedElement>
     </uml:Model>
     <xmi:Extension extender="Enterprise Architect" extenderID="6.5">
@@ -195,6 +202,23 @@
         </connectors>
         
         <diagrams>
+            <!-- Begin views diagrams -->
+            <?php foreach($views as $view): ?>
+            <diagram xmi:id="<?php print $view['name'];?>Diagram">
+             <model package="<?php print $view['name'];?>" owner="<?php print $view['name'];?>"/>
+             <properties name="<?php print $view['name'];?> Diagram"/>
+             <elements>
+               <?php $num = 0; ?>
+               <?php foreach($view['objects'] as $object): ?>
+               <element subject="<?php print $object['name'];?>" seqno="<?php print $num++;?>"/>
+               <?php endforeach;?>
+             </elements>
+            </diagram>
+            <?php endforeach; ?>
+            
+            <!-- End views diagrams -->
+            
+            
             <!-- TODO: Generate a diagram for each package -->
             <?php $i = 1; ?>
             <?php foreach ($objects as $package => $ddiobjects): ?>

@@ -5,7 +5,14 @@ function xmi_export_page() {
     dsm($objects);
     
     require_once('datatypes.inc');
-    dsm(get_datatypes());
+    //dsm(get_datatypes());
+    
+    
+    require_once('graph.inc');
+    //entity_graph("Question");
+    
+    get_all_views();
+    
     
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
@@ -27,6 +34,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                                     INNER JOIN {node} n ON n.nid = f.entity_id
                                     WHERE n.status = :status
                                     AND LOWER(n.title) = LOWER(:title)
+                                    ORDER BY n.title DESC
                                 ", array(
                                     ':status' => 1,
                                     ':title' => $entityTitle
@@ -42,6 +50,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                                                 AND f.deleted = 0
                                                 AND df.field_include_in_build_value = 1 
                                              )
+                                ORDER BY n.title DESC             
                                 ", array(
                                     ':type' => 'ddiobject',
                                     ':status' => 1,
@@ -73,7 +82,8 @@ function get_all_packages(){
                         FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
                         INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
                         WHERE df.field_include_in_build_value = 1 
-                        AND n.type = :type AND n.status = :status", array(
+                        AND n.type = :type AND n.status = :status
+                        ORDER BY n.title DESC", array(
                             ':type' => 'package',
                             ':status' => 1,
                         ));    
@@ -82,6 +92,43 @@ function get_all_packages(){
         $packages[] = $p;
     }
     return $packages;
+}
+
+
+function get_all_views(){
+    $query = new EntityFieldQuery();
+    
+    $query->entityCondition('entity_type', 'node')
+          ->propertyCondition('type', 'view')
+          ->fieldCondition('field_view_include_in_build', 'value' ,1)
+          ->propertyCondition('status', NODE_PUBLISHED);
+    
+    $query->propertyOrderBy('title', 'ASC');
+    
+    $result = $query->execute();
+    
+    $nodes = node_load_multiple(array_keys($result['node']));
+    
+    $views = array();
+    dsm($nodes);
+    foreach($nodes as $node){
+        $view = array();
+        $view['name'] = $node->title;
+        $view['definition'] = _get_value($node->body);
+        $view['objects'] = array();
+        if($node->field_object_reference['und']){
+            foreach($node->field_object_reference['und'] as $ref){
+                $objName = db_query('SELECT title FROM {node} WHERE nid = :nid', 
+                                    array(':nid'=>$ref['target_id']))
+                                ->fetchField();
+                $view['objects'][$objName] = array('name' => $objName);
+            }
+        }
+        
+        
+        $views[$node->title] = $view;
+    }
+    return $views;
 }
 
 function get_nodes($result) {
@@ -135,24 +182,36 @@ function get_nodes_by_status($tid) {
     return $query->execute();
 }
 
-function xmi_export_xmi($package = null) {
+function xmi_export_xmi($entityTitle = null, $type = "package") {
     require_once('datatypes.inc');
     
-    $objects = get_all_node_objects($package);
-    if($package != null){
-        if(array_key_exists($package, $objects)){
-            $tmp = $objects[$package];
+    $objects = get_all_node_objects($entityTitle);
+    $views = array();
+    
+    if($entityTitle == null){
+        $views = get_all_views();
+    }
+    
+    if($entityTitle != null && type == "package"){
+        if(array_key_exists($entityTitle, $objects)){
+            $tmp = $objects[$entityTitle];
             $objects = array();
-            $objects[$package] = $tmp;
+            $objects[$entityTitle] = $tmp;
         }
-    }    
+    }
     
-    header("Content-type: text/xml; charset=utf-8");
-    
+    //Load all datatypes
     $datatypes =  get_datatypes();
     $objects['Primitives'] = array();
     
-    print theme('xmi', array('objects' => $objects, 'datatypes' => $datatypes));
+    header("Content-type: text/xml; charset=utf-8");
+        
+    print '<?xml version="1.0" encoding="UTF-8"?>';
+    print theme('xmi', array(
+                        'objects' => $objects, 
+                        'datatypes' => $datatypes,
+                        'views' => $views
+                ));
     exit(0);
 }
 
@@ -164,8 +223,12 @@ function xmi_export_xmi($package = null) {
 function _put_into_packages($objects){
     $result = array();
     foreach($objects as $object){
-        $result[$object['package']][] = $object;
+        $result[$object['package']][$object['name']] = $object;
     }
+    foreach($result as &$ref){
+        ksort($ref);
+    }
+    ksort($result);
     return $result;
 }
 

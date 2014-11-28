@@ -77,6 +77,28 @@ function _generate_dot($entityTitle = null, $type = "package") {
     return _generate_dot_graph($objects);
 }
 
+
+function entity_graph($entityTitle) {
+    require_once('xmi_export.inc');
+    
+    $query = new EntityFieldQuery();
+    
+    $query->entityCondition('entity_type', 'node')
+          ->propertyCondition('status', NODE_PUBLISHED);
+    $query->propertyCondition('title', $entityTitle, '=');
+    
+    $result = $query->execute();
+    
+    if(count($result['node']) == 1){
+        dsm($result['node']);
+        $nid = key($result['node']);
+        
+    }
+    
+    return "";
+}
+
+
 function _generate_dot_graph($objects){
     $output .= 'digraph ddi4 {
         rankdir = "LR";
@@ -195,18 +217,4 @@ function _generate_dot_graph($objects){
     $output .= '}';
     
     return $output;    
-}
-
-
-function dot_graph_page() {
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/viz/viz.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/js/graph.utils.js', 'file');
-    $js = '
-    jQuery(document).ready(function() {      
-         jQuery("#graph").html(show_dot_graph("data", "svg"));
-    })';
-    drupal_add_js($js, 'inline');
-
-    //return theme('dot', array('dot' => _generate_dot()));
-    return 'temporarily out of order';
 }

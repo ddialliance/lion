@@ -82,14 +82,6 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'graph.inc',
     );
-        
-    $items['graph/dot'] = array(
-        'title' => 'Graph in dot',
-        'page callback' => 'dot_graph_page',
-        'access arguments' => array('access content'),
-        'type' => MENU_CALLBACK,
-        'file' => 'graph.inc',
-    );
     
     $items['graph/dot/package-list'] = array(
         'title' => 'List of urls',
