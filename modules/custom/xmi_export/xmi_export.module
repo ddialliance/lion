@@ -20,7 +20,7 @@ function xmi_export_menu() {
         'type' => MENU_NORMAL_ITEM,
         'file' => 'xmi_export.inc',
     );
-    
+
     $items['package/%/xmi.xml'] = array(
         'title' => 'xmi.xml',
         'page callback' => 'xmi_export_xmi',
@@ -29,7 +29,7 @@ function xmi_export_menu() {
         'type' => MENU_NORMAL_ITEM,
         'file' => 'xmi_export.inc',
     );
-    
+
     /* Docbook */
     $items['docbook.xml'] = array(
         'title' => 'docbook.xml',
@@ -38,7 +38,7 @@ function xmi_export_menu() {
         'type' => MENU_NORMAL_ITEM,
         'file' => 'docbook_export.inc',
     );
-    
+
     $items['package/%/docbook.xml'] = array(
         'title' => 'docbook.xml',
         'page callback' => 'docbook_export',
@@ -46,7 +46,7 @@ function xmi_export_menu() {
         'access arguments' => array('access content'),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'docbook_export.inc',
-    );    
+    );
 
     $items['docbook.html'] = array(
         'title' => 'docbook.html',
@@ -64,9 +64,9 @@ function xmi_export_menu() {
         'page arguments' => array(1),
         'type' => MENU_NORMAL_ITEM,
         'file' => 'graph.inc',
-    );    
+    );
 
-     $items['package/%/%'] = array(
+    $items['package/%/%'] = array(
         'title' => 'DOT dump per package',
         'page callback' => 'dot_package_export_image',
         'access arguments' => array('access content'),
@@ -74,7 +74,7 @@ function xmi_export_menu() {
         'type' => MENU_NORMAL_ITEM,
         'file' => 'graph.inc',
     );
-    
+
     $items['objects.dot'] = array(
         'title' => 'docbook.html',
         'page callback' => 'graph_dot',
@@ -82,7 +82,7 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'graph.inc',
     );
-    
+
     $items['graph/dot/package-list'] = array(
         'title' => 'List of urls',
         'page callback' => 'dot_url_list',
@@ -90,7 +90,7 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'graph.inc',
     );
-    
+
     $items['issues'] = array(
         'title' => 'Validation of objects',
         'page callback' => 'issues_page',
@@ -98,7 +98,7 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'validate.inc',
     );
-    
+
     $items['mapping/%'] = array(
         'title' => 'Mappings',
         'page callback' => 'get_mappings',
@@ -107,7 +107,7 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'mapping.inc',
     );
-    
+
 
     return $items;
 }
@@ -139,49 +139,49 @@ function xmi_export_theme() {
             'path' => $path,
             'template' => 'docbook',
             'variables' => array('objects' => NULL),
-        ),'dot' => array(
+        ), 'dot' => array(
             'path' => $path,
             'template' => 'dot',
             'variables' => array('dot' => NULL)
     ));
 }
 
+/**
+ * Hook for cleaning upp diffs for field groups
+ * 
+ * @param type $entity_diffs
+ * @param type $context
+ */
 function xmi_export_entity_diff_alter(&$entity_diffs, &$context) {
-  $entity_diffs['field_property']['#old'] = _diff_cleanup($entity_diffs['field_property']['#old']);
-  $entity_diffs['field_property']['#new'] = _diff_cleanup($entity_diffs['field_property']['#new']);
-  
-  $entity_diffs['field_relationship']['#old'] = _diff_cleanup($entity_diffs['field_relationship']['#old']);
-  $entity_diffs['field_relationship']['#new'] = _diff_cleanup($entity_diffs['field_relationship']['#new']);  
-  
-  $entity_diffs['field_rdf_mapping']['#old'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#old']);
-  $entity_diffs['field_rdf_mapping']['#new'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#new']);  
+    $entity_diffs['field_property']['#old'] = _diff_cleanup($entity_diffs['field_property']['#old']);
+    $entity_diffs['field_property']['#new'] = _diff_cleanup($entity_diffs['field_property']['#new']);
+
+    $entity_diffs['field_relationship']['#old'] = _diff_cleanup($entity_diffs['field_relationship']['#old']);
+    $entity_diffs['field_relationship']['#new'] = _diff_cleanup($entity_diffs['field_relationship']['#new']);
+
+    $entity_diffs['field_rdf_mapping']['#old'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#old']);
+    $entity_diffs['field_rdf_mapping']['#new'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#new']);
 }
 
 function _diff_cleanup($field) {
-  if (is_array($field)) {
-    $subject = implode(PHP_EOL, $field);
-  }
-  else {
-    $subject = $field;
-  }
-  $pattern = '%(<div class="field-item\s.+?">.+?)(</div>)%';
-  $replacement = '$1 $2';
-  $subject = trim(preg_replace('/\s+/', ' ', $subject));
-  $subject = str_replace("</tr>", "</tr>\n", $subject);
-  $subject = str_replace("</th>", " | </th>", $subject);
-  $subject = str_replace("</td>", " | </td>", $subject);
-  
-  $subject = trim(preg_replace($pattern, $replacement, $subject));
-  
-  //return $subject;
-  $subject = strip_tags($subject);
-  $subject = str_replace(" Edit Delete", "", $subject);
-  $subject = str_replace(" | Operations |", "", $subject);
-  $subject = str_replace("| |", "", $subject);
-  
-  
-  return $subject;
-  
-  
-}
+    if (is_array($field)) {
+        $subject = implode(PHP_EOL, $field);
+    } else {
+        $subject = $field;
+    }
+    $pattern = '%(<div class="field-item\s.+?">.+?)(</div>)%';
+    $replacement = '$1 $2';
+    $subject = trim(preg_replace('/\s+/', ' ', $subject));
+    $subject = str_replace("</tr>", "</tr>\n", $subject);
+    $subject = str_replace("</th>", " | </th>", $subject);
+    $subject = str_replace("</td>", " | </td>", $subject);
 
+    $subject = trim(preg_replace($pattern, $replacement, $subject));
+
+    $subject = strip_tags($subject);
+    $subject = str_replace(" Edit Delete", "", $subject);
+    $subject = str_replace(" | Operations |", "", $subject);
+    $subject = str_replace("| |", "", $subject);
+
+    return $subject;
+}

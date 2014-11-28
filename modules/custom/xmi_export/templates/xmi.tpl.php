@@ -44,7 +44,6 @@
                             <?php endforeach; ?>
                             <?php endif;?>
 
-
                             <?php if (array_key_exists('relationships', $object)): ?>
                                 <!-- relationships -->
                                 <?php foreach ($object['relationships'] as $relation): ?>
@@ -65,7 +64,6 @@
                             <?php if ($relation['target_object']): ?>
                     <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
                                 <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>">
-
                                     <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
                                     <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target"/>
                                     <ownedEnd xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" <?php if($relation['xmi_type'] != "none"):?> aggregation="<?php print $relation['xmi_type']; ?>"<?php endif;?>>
@@ -96,7 +94,6 @@
                 <properties isSpecification="false" sType="Package" nType="0" scope="public"/>
             </element>
             <?php endforeach;?>
-            
             <!-- Objects -->
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
@@ -108,8 +105,7 @@
                 <code gentype="Java"/>
                 
                 <?php if(count($object['properties'])): ?>
-                <attributes>
-                    
+                <attributes> 
                     <?php foreach ($object['properties'] as $item): ?>
                         <attribute xmi:idref="<?php print $object['name']; ?>_<?php print $item['name']; ?>" name="<?php print $item['name']; ?>" scope="Public">
                                 <initial/>
@@ -153,7 +149,6 @@
                 <?php endforeach;?>
             <?php endforeach;?>
         </elements>
-        
         <connectors>
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
@@ -163,7 +158,6 @@
                             <connector xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source">
                                 <source xmi:idref="<?php print $object['name']; ?>">
                                         <model ea_localid="1621" type="Class" name="<?php print $object['name']; ?>"/>
-                                        
                                         <constraints/>
                                         <modifiers isNavigable="false"/>
                                         <style/>
@@ -173,7 +167,6 @@
                                 </source>
                                 <target xmi:idref="<?php print $relation['name']; ?>">
                                         <model ea_localid="1620" type="Class" name="?php print $relation['name']; ?>"/>
-                                        
                                         <constraints/>
                                         <modifiers isNavigable="false"/>
                                         <style/>
@@ -200,7 +193,6 @@
                 <?php endforeach;?>
             <?php endforeach;?>
         </connectors>
-        
         <diagrams>
             <!-- Begin views diagrams -->
             <?php foreach($views as $view): ?>
@@ -215,9 +207,7 @@
              </elements>
             </diagram>
             <?php endforeach; ?>
-            
             <!-- End views diagrams -->
-            
             
             <!-- TODO: Generate a diagram for each package -->
             <?php $i = 1; ?>
@@ -237,6 +227,5 @@
             <?php endforeach;?>
             <!-- TODO: Generate a diagram for each view -->
         </diagrams>
-        
     </xmi:Extension>
 </xmi:XMI>

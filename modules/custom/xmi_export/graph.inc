@@ -77,7 +77,6 @@ function _generate_dot($entityTitle = null, $type = "package") {
     return _generate_dot_graph($objects);
 }
 
-
 function entity_graph($entityTitle) {
     require_once('xmi_export.inc');
     
@@ -130,7 +129,6 @@ function _generate_dot_graph($objects){
 
     $prefix = 'DDI_';
     
-    
     //Classes 
     foreach ($objects as $package => $classes) {
         $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
@@ -178,7 +176,6 @@ function _generate_dot_graph($objects){
     $output .= "\n";
 
     foreach ($objects as $package => $classes) {
-
         foreach ($classes as $class) {
 
             //extensions
@@ -209,7 +206,6 @@ function _generate_dot_graph($objects){
                             $color = '00000';
                             $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['source_cardinality'] . '" headlabel="' . $relation['target_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                     }
-                    
                 }
             }
         }

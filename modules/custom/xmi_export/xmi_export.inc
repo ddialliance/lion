@@ -70,7 +70,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
             }          
         }
         
-        cache_set('xmi_export'.$last_update.'-'.$collection.'-'.$type, $objects, 'cache', time() + 3600);
+        cache_set('xmi_export'.$last_update.'-'.$entityTitle.'-'.$type, 'cache', time() + 3600);
       }
     }
 
@@ -206,7 +206,7 @@ function xmi_export_xmi($entityTitle = null, $type = "package") {
     
     header("Content-type: text/xml; charset=utf-8");
         
-    print '<?xml version="1.0" encoding="UTF-8"?>';
+    print '<?xml version="1.0" encoding="UTF-8"?>'."\n";
     print theme('xmi', array(
                         'objects' => $objects, 
                         'datatypes' => $datatypes,
@@ -411,7 +411,7 @@ function _render_datatype($type){
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
                 break;
             case "xs:language":
-                $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Language"/><!-- No UML datatype for xs:language? -->';
+                $output = '<type xmi:type="xs:language"/><!-- No UML datatype for xs:language? -->';
                 break;
             default:
                  $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"/>';
