@@ -7,12 +7,10 @@ function xmi_export_page() {
     require_once('datatypes.inc');
     //dsm(get_datatypes());
     
-    
     require_once('graph.inc');
     //entity_graph("Question");
     
     get_all_views();
-    
     
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
@@ -78,8 +76,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
 }
 
 function get_all_packages(){
-    $result = db_query("SELECT n.nid, n.title AS name, u.name AS creator  
-                        FROM {node} n  INNER JOIN {users} u ON u.uid = n.uid 
+    $result = db_query("SELECT n.nid, n.title AS name
                         INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
                         WHERE df.field_include_in_build_value = 1 
                         AND n.type = :type AND n.status = :status
@@ -120,7 +117,9 @@ function get_all_views(){
             foreach($node->field_object_reference['und'] as $ref){
                 $objName = db_query('SELECT title FROM {node} WHERE nid = :nid', 
                                     array(':nid'=>$ref['target_id']))
-                                ->fetchField();
+                               ->fetchField();
+
+                
                 $view['objects'][$objName] = array('name' => $objName);
             }
         }

@@ -82,7 +82,7 @@
         <!-- DDI4 views -->
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)">
             <?php foreach($views as $view): ?>
-                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>" visibility="public"/>
+                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>"/>
             <?php endforeach; ?>
         </packagedElement>
     </uml:Model>
