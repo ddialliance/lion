@@ -1,45 +1,5 @@
 <?php
 
-function graph_json() {
-    
-    $color = array('FF7400', 'FFAA00', 'FF0000', '009999', '33CCCC', 'FF7373', 'FFD073', 'FFB273', 'A60000');
-
-    require_once('xmi_export.inc');
-    $objects = get_all_node_objects();
-
-    $json = array();
-
-    foreach ($objects as $package => $classes) {
-
-        foreach ($classes as $class) {
-            $o = new stdClass();
-            $o->id = $class['name'];
-            $json['nodes'][] = array('data' => $o);
-
-            if ($class['extends']) {
-                $o = new stdClass();
-                $o->class = $class['name'];
-                $o->extends = $class['extends'];
-                $json['extensions'][] = array('data' => $o);
-            }
-
-
-            foreach ($class['relationships'] as $relation) {
-                if ($relation['target_object']) {
-                    $o = new stdClass();
-                    $o->source = $class['name'];
-                    $o->target = $relation['target_object'];
-                    $json['edges'][] = array('data' => $o);
-                }
-            }
-        }
-    }
-
-    header('Content-Type: application/json');
-    print json_encode($json);
-    exit(0);
-}
-
 function dot_url_list(){
     global $base_url;
     require_once('xmi_export.inc');
@@ -66,7 +26,6 @@ function dot_package_export($package){
 }
 
 function dot_package_export_image($package, $format){
-    
     $graph = _generate_dot($package);
     
     $output = graphviz_filter_filterproc('
@@ -87,9 +46,11 @@ function dot_package_export_image($package, $format){
         case "svg":
             header("Content-Type: image/svg+xml");
             break;
+        default:
+            header("Content-Type: image/svg+xml");
+            $format = "svg";
     }
-    
-    
+       
     foreach($matches[0] as $url){
         if(substr($url, -8) === ".out.".$format){
             print file_get_contents($url);
@@ -100,17 +61,30 @@ function dot_package_export_image($package, $format){
     exit(0);
 }
 
-function _generate_dot($collection = null, $type = "package") {
+function _generate_dot($entityTitle = null, $type = "package") {
     global $base_url;
 
     set_time_limit(250);
     ini_set('memory_limit','512M');
     require_once('xmi_export.inc');
-    $objects = get_all_node_objects($collection, $type);
+    
+    if($type == "package" || $type == "view"){
+        $objects = get_all_node_objects($entityTitle, $type);
+    }else if($type == "object"){
+        
+    }
 
+    return _generate_dot_graph($objects);
+}
 
+function _generate_dot_graph($objects){
     $output .= 'digraph ddi4 {
         rankdir = "LR";
+        layout=dot;
+        overlap=false; //false, compress, ...
+        sep=true;
+        compound=true;
+
         graph [
             fontname = "helvetica"
         ];
@@ -121,11 +95,14 @@ function _generate_dot($collection = null, $type = "package") {
             fontsize = "12"
             shape = "record"
             align = "left"
+            mindist=0.5
         ];
         
         edge [
             fontname = "helvetica"
             fontsize = "10"
+            minlen=1
+            mode="ipsep"
         ];
 ';
 
@@ -202,7 +179,8 @@ function _generate_dot($collection = null, $type = "package") {
                         case 'Composition':
                             $arrow = 'diamond';
                             $side = 'r';
-                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            
+                            $output .= "\t" . $prefix.$relation['target_object']  . ' -> ' . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
                             $arrow = 'open';
@@ -216,8 +194,9 @@ function _generate_dot($collection = null, $type = "package") {
     }
     $output .= '}';
     
-    return $output;
+    return $output;    
 }
+
 
 function dot_graph_page() {
     drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/viz/viz.js', 'file');
@@ -231,43 +210,3 @@ function dot_graph_page() {
     //return theme('dot', array('dot' => _generate_dot()));
     return 'temporarily out of order';
 }
-
-
-function graph_page() {
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/raphael-min.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_graffle.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_graph.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/dracula/dracula_algorithms.js', 'file');
-    $js = '
-           jQuery(document).ready(function() {
-            var g = new Graph();
-            g.edgeFactory.template.style.directed = true;        
-
-            jQuery.getJSON("/objects.json", function(data) {
-               jQuery.each(data.nodes, function(i,node){
-                 console.log(node.data.id);
-                 g.addNode(node.data.id);
-               });
-               jQuery.each(data.edges, function(i,edge){
-                 g.addEdge(edge.data.source, edge.data.target);
-               });
-               jQuery.each(data.extensions, function(i,extend){
-                 g.addEdge(extend.data.extends, extend.class);
-               });
-               //var layouter = new Graph.Layout.Ordered(g, topological_sort(g));
-               var layouter = new Graph.Layout.Spring(g);
-               layouter.layout();
-               var renderer = new Graph.Renderer.Raphael("canvas", g, 1000, 900);
-            });
-          });';
-    drupal_add_js($js, 'inline');
-    return '<div id="canvas"></div><br/>Rendered using <a href="http://www.graphdracula.net/">Dracula Graph Library</a>';
-}
-
-function graph_arbor_page() {
-    drupal_add_js(drupal_get_path('module', 'xmi_export') . '/libs/arbor/arbor.js', 'file');
-
-    return '<canvas id="viewport" width="800" height="600"></canvas>';
-}
-
-?>

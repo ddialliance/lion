@@ -6,17 +6,16 @@ function xmi_export_page() {
     return '<br>This is a draft of the export of the objects to XMI 2.1: <a href="/xmi.xml">xmi.xml</a> (this is generated on the fly)';
 }
 
-function get_all_node_objects($collection = null, $type = "package") {
+function get_all_node_objects($entityTitle = null, $type = "package") {
 
     $last_update = db_query('SELECT changed FROM {node} ORDER BY changed DESC LIMIT 1')
                         ->fetchField();
     
     $objects = &drupal_static(__FUNCTION__);
     if (!isset($my_data)) {
-      if ($cache = cache_get('xmi_export'.$last_update.'-'.$collection.'-'.$type)) {
+      if ($cache = cache_get('xmi_export'.$last_update.'-'.$entityTitle.'-'.$type)) {
         $objects = $cache->data;
-      }
-      else {
+      }else {
         if($type == "view"){
             
             $result = db_query("SELECT field_object_reference_target_id AS nid
@@ -26,9 +25,9 @@ function get_all_node_objects($collection = null, $type = "package") {
                                     AND n.title = :title
                                 ", array(
                                     ':status' => 1,
-                                    ':title' => $collection
+                                    ':title' => $entityTitle
                                 ));            
-        }else{
+        }else if($type == "package"){
             $result = db_query("SELECT n.nid
                                 FROM {node} n 
                                 WHERE n.type = :type AND n.status = :status
@@ -48,9 +47,9 @@ function get_all_node_objects($collection = null, $type = "package") {
         $objects = get_nodes($result);
 
         if($type == "package"){
-            if($collection != null){
+            if($entityTitle != null){
                 foreach ($objects as $package_name => $tmp){
-                    if(strtolower($package_name) == strtolower($collection)){
+                    if(strtolower($package_name) == strtolower($entityTitle)){
                         $objects = array();
                         $objects[$package_name] = $tmp;
                     }
