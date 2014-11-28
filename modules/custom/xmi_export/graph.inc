@@ -205,9 +205,9 @@ function _generate_dot_graph($objects){
                             $output .= "\t" . $prefix.$relation['target_object']  . ' -> ' . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
-                            $arrow = 'open';
+                            $arrow = 'none';
                             $color = '00000';
-                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['source_cardinality'] . '" headlabel="' . $relation['target_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                     }
                     
                 }
