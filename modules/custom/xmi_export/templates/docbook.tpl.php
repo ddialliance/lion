@@ -41,15 +41,32 @@
             <?php endif;?>            
     
             <?php if($object["rdf_mapping"]): ?>
-            <section  revision="" role="ddi_3_2">
-                <title>RDF Mapping</title>
-                
-                <?php foreach($object["rdf_mapping"] as $mapping): ?>
-                <para>    
-                    
-                </para>
-                <?php endforeach;?>
-                
+            <section  revision="" role="rdf_mapping">
+  
+                    <table frame="all">
+                        <title>RDF Mapping</title>
+                        <tgroup cols="3">
+                            <colspec colname="c1" colnum="1" colwidth="1*"/>
+                            <colspec colname="c2" colnum="2" colwidth="1.4*"/>
+                            <colspec colname="c3" colnum="3" colwidth="2.68*"/>
+                            <thead>
+                                <row>
+                                    <entry>Label</entry>
+                                    <entry>Type</entry>
+                                    <entry>URI</entry>
+                                </row>
+                            </thead>
+                            <tbody>
+                                <?php foreach($object["rdf_mapping"] as $mapping): ?>
+                                <row>
+                                    <entry><?php print $mapping['label'];?></entry>
+                                    <entry><?php print $mapping['type'];?></entry>
+                                    <entry><link xlink:href="<?php print $mapping['uri'];?>"><?php print $mapping['uri'];?></link></entry>
+                                </row>
+                                <?php endforeach;?>    
+                            </tbody>
+                        </tgroup>
+                    </table>
             </section>
             <?php endif;?>  
             
@@ -64,6 +81,29 @@
                 <title>Definition</title>
                 <para><?php if(array_key_exists('definition',$object)){print $object['definition'];} ?></para>
             </section>
+            
+            <?php if($object['example']):?>
+            <section xml:id="ddi4-<?php print $object['uuid']; ?>-example"  revision="" role="example">
+                <title>Example</title>
+                <para>
+                    <![CDATA[
+                    <?php if(array_key_exists('example',$object)){print $object['example'];} ?>
+                    ]]>
+                </para>
+            </section>            
+            <?php endif;?>
+
+            <?php if($object['explanatory_notes']):?>
+            <section xml:id="ddi4-<?php print $object['uuid']; ?>-explanatory_notes"  revision="" role="explanatory_notes">
+                <title>Example</title>
+                <para>
+                    <![CDATA[
+                    <?php if(array_key_exists('explanatory_notes',$object)){print $object['explanatory_notes'];} ?>
+                    ]]>
+                </para>
+            </section>            
+            <?php endif;?>            
+            
             <?php if(count($object['properties']) > 0): ?>
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
                 <title>Properties</title>
