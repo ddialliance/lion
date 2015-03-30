@@ -76,7 +76,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
 }
 
 function get_all_packages(){
-    $result = db_query("SELECT n.nid, n.title AS name
+    $result = db_query("SELECT n.nid, n.title AS name FROM node n
                         INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
                         WHERE df.field_include_in_build_value = 1 
                         AND n.type = :type AND n.status = :status

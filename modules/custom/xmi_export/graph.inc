@@ -210,7 +210,21 @@ function _generate_dot_graph($objects){
             }
         }
     }
+    
+    /*
+    subgraph PackageName{
+        label="PackageName"
+        color=lightblue  style=filled
+        DDI_AnnotatedIdentifiable[label="AnnotatedIdentifiable"]
+    }*/
+    
+    
     $output .= '}';
     
     return $output;    
+}
+
+
+function _object_to_dot($object){
+    
 }
