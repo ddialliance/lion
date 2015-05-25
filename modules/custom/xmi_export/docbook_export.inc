@@ -3,6 +3,10 @@ define('DOCBOOK_HEADER', '<?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>');
 
+/**
+ * Exports docbook xml for a specified package
+ * @param type $package shortname for the package to export docbook xml for
+ */
 function docbook_export($package = null) {
     require_once('xmi_export.inc');
     $objects = get_all_node_objects($package);
@@ -19,6 +23,9 @@ function docbook_export($package = null) {
     exit(0);
 }
 
+/**
+ * Exports all packages as a docbook rendered via the docbook xml->html xslt
+ */
 function docbook_html() {
     require_once('xmi_export.inc');
     $objects = get_all_node_objects();
@@ -30,13 +37,5 @@ function docbook_html() {
 
     print DOCBOOK_HEADER . '<?xml-stylesheet type="text/xsl" href="/' . drupal_get_path('module', 'xmi_export') . '/xslt/docbook/xhtml-1_1/docbook.xsl"?>' . $docbook;
 
-    /*
-      print DOCBOOK_HEADER.'<?xml-stylesheet type="text/xsl" href="/'.drupal_get_path('module', 'xmi_export').'/xslt/db2xhtml/xsl/main.xsl"?>'.$docbook;
-     */
-
-
-    //drupal_get_path('module', 'xmi_export').
     exit(0);
 }
-
-?>
