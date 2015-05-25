@@ -6,7 +6,6 @@
         </author>
         <date><?php print date("Y-m-d");?></date>
         <legalnotice>Licence of all documentation is LGPL v3</legalnotice>
-        
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
@@ -23,7 +22,6 @@
                 <?php else: ?>
                 <para>This object extends <link linkend="ddi4-<?php print $object['extends_uuid']; ?>"><?php print $object['extends']; ?></link></para>
                 <?php endif;?>
-                
             </section>
             <?php endif;?>
             <?php if($object["is_abstract"]): ?>
@@ -42,7 +40,6 @@
     
             <?php if($object["rdf_mapping"]): ?>
             <section  revision="" role="rdf_mapping">
-  
                     <table frame="all">
                         <title>RDF Mapping</title>
                         <tgroup cols="3">
