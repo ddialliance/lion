@@ -55,7 +55,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                                     ':status' => 1,
                                 ));
         }
-        
+            
         $objects = get_nodes($result);
 
         if($type == "package"){
@@ -87,11 +87,26 @@ function get_all_packages(){
                         ));    
     $packages = array();
     while($p = $result->fetchAssoc()){
-        $packages[] = $p;
+        $packages[$p["name"]] = $p;
     }
+    
+    //sort objects by weight
+    foreach($packages as &$p)
+    {
+        $weight_result = db_query("SELECT field_weight_value
+                                         FROM field_data_field_weight f
+                                         WHERE entity_id = :nid", array(":nid" => $p["nid"]))->fetchField();
+        if(!empty($weight_result)){
+            $p["weight"] = $weight_result;
+        }
+        else{
+            $p["weight"] = 100;
+        }
+    } 
+    uasort($packages, "_sort_by_weight_comparer");
+    
     return $packages;
 }
-
 
 function get_all_views(){
     $query = new EntityFieldQuery();
@@ -123,11 +138,26 @@ function get_all_views(){
                 
                 $view['objects'][$objName] = array('name' => $objName);
             }
-        }
-        
+        }       
         
         $views[$node->title] = $view;
     }
+    
+    //sort objects by weight
+    foreach($views as &$v)
+    {
+        $weight_result = db_query("SELECT field_weight_value
+                                         FROM field_data_field_weight f
+                                         WHERE entity_id = :nid", array(":nid" => $v["nid"]))->fetchField();
+        if(!empty($weight_result)){
+            $v["weight"] = $weight_result;
+        }
+        else{
+            $v["weight"] = 100;
+        }
+    } 
+    uasort($views, "_sort_by_weight_comparer");
+    
     return $views;
 }
 
@@ -221,14 +251,16 @@ function xmi_export_xmi($entityTitle = null, $type = "package") {
  * @return type
  */
 function _put_into_packages($objects){
-    $result = array();
+    
+    $result = get_all_packages();
+        
     foreach($objects as $object){
         $result[$object['package']][$object['name']] = $object;
     }
     foreach($result as &$ref){
         ksort($ref);
     }
-    ksort($result);
+    
     return $result;
 }
 
@@ -429,4 +461,8 @@ function _render_datatype($type){
 function _escape_for_export($string){
     $string = str_replace(':', '_', $string);
     return $string;
+}
+
+function _sort_by_weight_comparer($a, $b){
+    return $a["weight"] > $b["weight"];
 }
