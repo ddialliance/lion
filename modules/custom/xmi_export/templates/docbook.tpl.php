@@ -1,11 +1,16 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
     <info>
         <title>DDI Moving Forward: Object Description</title>
+        <subtitle>
+            <markup><?php print date("Y-m-d");?></markup>
+        </subtitle>        
         <author>
             <orgname>the Data Documentation Initiative</orgname>
         </author>
         <date><?php print date("Y-m-d");?></date>
-        <legalnotice>Licence of all documentation is LGPL v3</legalnotice>
+        <legalnotice>
+            <para>Licence of all documentation is LGPL v3</para>
+        </legalnotice>
     </info>
 
     <?php foreach($objects as $package=>$ddiobjects): ?>
