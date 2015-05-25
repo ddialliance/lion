@@ -163,6 +163,11 @@ function xmi_export_entity_diff_alter(&$entity_diffs, &$context) {
     $entity_diffs['field_rdf_mapping']['#new'] = _diff_cleanup($entity_diffs['field_rdf_mapping']['#new']);
 }
 
+/**
+ * Cleanup the drupal dif output
+ * @param type $field field to clean
+ * @return string cleaned drif
+ */
 function _diff_cleanup($field) {
     if (is_array($field)) {
         $subject = implode(PHP_EOL, $field);
