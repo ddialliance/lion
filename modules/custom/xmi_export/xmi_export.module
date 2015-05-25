@@ -76,7 +76,7 @@ function xmi_export_menu() {
     );
 
     $items['objects.dot'] = array(
-        'title' => 'docbook.html',
+        'title' => 'Objects as dot',
         'page callback' => 'graph_dot',
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,

@@ -4,10 +4,9 @@ function dot_url_list(){
     global $base_url;
     require_once('xmi_export.inc');
     header("Content-Type: text/plain");
-    $packages = get_all_packages();
-    
-    foreach($packages as $package){
-        print $base_url.'/package/'.  strtolower($package['name']).'/dot.txt/'.$package['name'].".dot\n";
+    $objects = get_all_node_objects();
+    foreach($objects as $package => $objects){
+        print $base_url.'/package/'.  strtolower($package).'/dot.txt/'.$package.".dot\n";
     }
     exit(0);
 }
@@ -68,8 +67,17 @@ function _generate_dot($entityTitle = null, $type = "package") {
     ini_set('memory_limit','512M');
     require_once('xmi_export.inc');
     
-    if($type == "package" || $type == "view"){
-        $objects = get_all_node_objects($entityTitle, $type);
+    $objects = array();
+    
+    if($entityTitle == null){
+        $objects = get_all_node_objects();
+    }if($type == "package"){
+        $packages = get_all_node_objects();
+        foreach($packages as $package => $objectList){
+            if(strtolower($package) == strtolower($entityTitle)){
+                $objects[$package] = $objectList;
+            }
+        }
     }else if($type == "object"){
         
     }
@@ -192,19 +200,19 @@ function _generate_dot_graph($objects){
                     switch ($relation['type']) {
                         case 'Aggregation':
                             $arrow = 'odiamond';
-                            $side = 'l';
+                            $side = 'side=l';
                             $output .= "\t" . $prefix.$relation['target_object'] . ' -> ' .  $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         case 'Composition':
                             $arrow = 'diamond';
-                            $side = 'r';
+                            $side = 'side=r';
                             
-                            $output .= "\t" . $prefix.$relation['target_object']  . ' -> ' . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$relation['target_object']  . ' -> ' . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' ['.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['target_cardinality'] . '" headlabel="' . $relation['source_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                             break;
                         default:
                             $arrow = 'none';
                             $color = '00000';
-                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' [side='.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['source_cardinality'] . '" headlabel="' . $relation['target_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
+                            $output .= "\t" . $prefix.$class['name'] . ':' . $class['name'] . $relation['name'] . ' -> ' . $prefix.$relation['target_object'] . ' ['.$side.' arrowhead=' . $arrow . ' labeldistance=1.9 taillabel="' . $relation['source_cardinality'] . '" headlabel="' . $relation['target_cardinality'] . '"  edgetooltip="' . $relation['name'] . '" fontcolor="black" color="#' . $color . '"];' . "\n";
                     }
                 }
             }

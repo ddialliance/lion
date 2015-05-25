@@ -40,7 +40,8 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
         }else if($type == "package"){
             $result = db_query("SELECT n.nid
                                 FROM {node} n 
-                                WHERE n.type = :type AND n.status = :status
+                                WHERE n.type = :type 
+                                AND n.status = :status
                                 AND n.nid IN (SELECT f.entity_id FROM field_data_field_package f 
                                                 INNER JOIN node n ON n.nid = f.field_package_target_id 
                                                 INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
@@ -65,7 +66,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                         $objects[$package_name] = $tmp;
                     }
                 }
-            }          
+            }
         }
         
         cache_set('xmi_export'.$last_update.'-'.$entityTitle.'-'.$type, 'cache', time() + 3600);
@@ -80,7 +81,7 @@ function get_all_packages(){
                         INNER JOIN field_data_field_include_in_build df ON n.nid = df.entity_id
                         WHERE df.field_include_in_build_value = 1 
                         AND n.type = :type AND n.status = :status
-                        ORDER BY n.title DESC", array(
+                        ORDER BY n.title ASC", array(
                             ':type' => 'package',
                             ':status' => 1,
                         ));    
@@ -410,6 +411,9 @@ function _render_datatype($type){
             case "xs:float":
             case "xs:decimal":
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
+                break;
+            case "xs:decimal":
+                $output = '<type xmi:type="xsd:anyURI" href="http://www.w3.org/2001/XMLSchema#anyURI"/>';
                 break;
             case "xs:language":
                 $output = '<type xmi:type="xs:language"/><!-- No UML datatype for xs:language? -->';
