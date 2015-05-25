@@ -412,7 +412,7 @@ function _render_datatype($type){
             case "xs:decimal":
                 $output = '<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Real"/>';
                 break;
-            case "xs:decimal":
+            case "xs:anyURI":
                 $output = '<type xmi:type="xsd:anyURI" href="http://www.w3.org/2001/XMLSchema#anyURI"/>';
                 break;
             case "xs:language":
