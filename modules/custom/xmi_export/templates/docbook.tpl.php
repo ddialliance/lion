@@ -111,7 +111,7 @@
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties" revision="" role="properties">
                 <title>Properties</title>
                 <?php foreach($object['properties'] as $item):?>
-                <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties-<?php print $item['name']; ?>">
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-properties-<?php print str_replace(":", "_", $item['name']); ?>">
                     <title><?php print $item['name']; ?></title>
                     <informaltable frame="all">
                         <tgroup cols="2">
