@@ -17,6 +17,7 @@
     <chapter xml:id="ddi4-<?php print str_replace(' ', '',$package);?>">
         <title><?php print $package;?></title>
         <?php foreach($ddiobjects as $object):?>
+        <?php if (is_array($object)):?>
         <section xml:id="ddi4-<?php print $object['uuid']; ?>">
             <title><?php print $object['name']; ?></title>
             <?php if($object['extends']):?>
@@ -183,6 +184,7 @@
             </section>
             <?php endif; ?>
         </section>
+        <?php endif;?>
         <?php endforeach; ?>
     </chapter>
     <?php endforeach; ?>
