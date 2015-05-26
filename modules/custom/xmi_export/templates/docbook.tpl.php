@@ -98,7 +98,7 @@
 
             <?php if($object['explanatory_notes']):?>
             <section xml:id="ddi4-<?php print $object['uuid']; ?>-explanatory_notes"  revision="" role="explanatory_notes">
-                <title>Example</title>
+                <title>Explanatory Notes</title>
                 <para>
                     <![CDATA[
                     <?php if(array_key_exists('explanatory_notes',$object)){print $object['explanatory_notes'];} ?>
