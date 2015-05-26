@@ -25,56 +25,58 @@
                     <!-- End Datatypes -->
                     <?php endif; ?>
                     <?php foreach ($ddiobjects as $object): ?>
-                        <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
-                            <?php if ($object['extends']): ?>
-                                <!-- extends -->
-                                <generalization xmi:type="uml:Generalization" xmi:id="<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" general="<?php print $object['extends']; ?>"/>
-                            <?php endif; ?>
-                            <?php if(array_key_exists('properties', $object)): ?>
-                            <!-- properties -->
-                            <?php foreach ($object['properties'] as $item): ?>
-                                <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
-                                    <?php if (array_key_exists('datatype', $item)): ?>
-                                        <?php print _render_datatype($item['datatype']); ?>
-                                    <?php endif; ?>
-                                    <?php if (array_key_exists('cardinality', $item)): ?>
-                                        <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $item['name'], 'cardinality' => $item['cardinality'])); ?>
-                                    <?php endif; ?>
-                                </ownedAttribute>
-                            <?php endforeach; ?>
-                            <?php endif;?>
-
-                            <?php if (array_key_exists('relationships', $object)): ?>
-                                <!-- relationships -->
-                                <?php foreach ($object['relationships'] as $relation): ?>
-                                    <?php if ($relation['target_object']): ?>
-                                        <ownedAttribute xmi:type="uml:Property" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association">
-                                            <?php if (array_key_exists('target_object', $relation)): ?>
-                                                <type xmi:idref="<?php print $relation['target_object']; ?>"/>
-                                            <?php endif; ?>
-                                            <?php if (array_key_exists('source_cardinality', $relation)): ?>
-                                                <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name'], 'cardinality' => $relation['source_cardinality'])); ?>
-                                            <?php endif; ?>                    
-                                        </ownedAttribute>
-                                    <?php endif; ?>
+                        <?php if(is_array($object)):?>
+                            <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
+                                <?php if ($object['extends']): ?>
+                                    <!-- extends -->
+                                    <generalization xmi:type="uml:Generalization" xmi:id="<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" general="<?php print $object['extends']; ?>"/>
+                                <?php endif; ?>
+                                <?php if(array_key_exists('properties', $object)): ?>
+                                <!-- properties -->
+                                <?php foreach ($object['properties'] as $item): ?>
+                                    <ownedAttribute xmi:type="uml:Property" name="<?php print $item['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $item['name']; ?>">
+                                        <?php if (array_key_exists('datatype', $item)): ?>
+                                            <?php print _render_datatype($item['datatype']); ?>
+                                        <?php endif; ?>
+                                        <?php if (array_key_exists('cardinality', $item)): ?>
+                                            <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $item['name'], 'cardinality' => $item['cardinality'])); ?>
+                                        <?php endif; ?>
+                                    </ownedAttribute>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        </packagedElement>
-                        <?php foreach ($object['relationships'] as $relation): ?>
-                            <?php if ($relation['target_object']): ?>
-                    <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
-                                <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>">
-                                    <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
-                                    <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target"/>
-                                    <ownedEnd xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" <?php if($relation['xmi_type'] != "none"):?> aggregation="<?php print $relation['xmi_type']; ?>"<?php endif;?>>
-                                        <type xmi:idref="<?php print $object['name']; ?>"/>
-                                        <?php if (array_key_exists('target_cardinality', $relation)): ?>
-                                            <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name']."_packagedElement", 'cardinality' => $relation['target_cardinality'])); ?>
-                                        <?php endif; ?> 
-                                    </ownedEnd>
-                                </packagedElement>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                                <?php endif;?>
+
+                                <?php if (array_key_exists('relationships', $object)): ?>
+                                    <!-- relationships -->
+                                    <?php foreach ($object['relationships'] as $relation): ?>
+                                        <?php if ($relation['target_object']): ?>
+                                            <ownedAttribute xmi:type="uml:Property" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association">
+                                                <?php if (array_key_exists('target_object', $relation)): ?>
+                                                    <type xmi:idref="<?php print $relation['target_object']; ?>"/>
+                                                <?php endif; ?>
+                                                <?php if (array_key_exists('source_cardinality', $relation)): ?>
+                                                    <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name'], 'cardinality' => $relation['source_cardinality'])); ?>
+                                                <?php endif; ?>                    
+                                            </ownedAttribute>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </packagedElement>
+                            <?php foreach ($object['relationships'] as $relation): ?>
+                                <?php if ($relation['target_object']): ?>
+                        <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
+                                    <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>">
+                                        <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
+                                        <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target"/>
+                                        <ownedEnd xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" <?php if($relation['xmi_type'] != "none"):?> aggregation="<?php print $relation['xmi_type']; ?>"<?php endif;?>>
+                                            <type xmi:idref="<?php print $object['name']; ?>"/>
+                                            <?php if (array_key_exists('target_cardinality', $relation)): ?>
+                                                <?php print theme('xmi_cardinality', array('object' => $object['name'], 'property' => $relation['name']."_packagedElement", 'cardinality' => $relation['target_cardinality'])); ?>
+                                            <?php endif; ?> 
+                                        </ownedEnd>
+                                    </packagedElement>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif;?>
                     <?php endforeach; ?>
                 </packagedElement>
             <?php endforeach; ?>
