@@ -22,7 +22,3 @@
    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="<?php print $object;?>_<?php print $property;?>_lower" value="1"/>
    <upperValue xmi:type="uml:LiteralInteger" xmi:id="<?php print $object;?>_<?php print $property;?>_upper" value="1"/>                        
 <?php endif; ?>    
-<?php if($cardinality == '1..n'): ?>
-   <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="<?php print $object;?>_<?php print $property;?>_lower" value="1"/>
-   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="<?php print $object;?>_<?php print $property;?>_upper" value="-1"/>                        
-<?php endif; ?>
