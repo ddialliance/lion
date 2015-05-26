@@ -9,6 +9,7 @@ define('DOCBOOK_HEADER', '<?xml version="1.0" encoding="UTF-8"?>
  */
 function docbook_export($package = null) {
     require_once('xmi_export.inc');
+    
     $objects = get_all_node_objects($package);
     if($package != null){
         if(array_key_exists($package, $objects)){
@@ -16,10 +17,12 @@ function docbook_export($package = null) {
             $objects = array();
             $objects[$package] = $tmp;
         }
-    }      
+    }
+    $build = _get_build_node();
+    
     header("Content-type: text/xml; charset=utf-8");
     print DOCBOOK_HEADER;
-    print theme('docbook', array('objects' => $objects));
+    print theme('docbook', array('objects' => $objects, 'build' => $build));
     exit(0);
 }
 
@@ -38,4 +41,26 @@ function docbook_html() {
     print DOCBOOK_HEADER . '<?xml-stylesheet type="text/xsl" href="/' . drupal_get_path('module', 'xmi_export') . '/xslt/docbook/xhtml-1_1/docbook.xsl"?>' . $docbook;
 
     exit(0);
+}
+
+function _get_build_node(){
+    $query = new EntityFieldQuery();
+
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'build_release')
+      ->propertyCondition('status', NODE_PUBLISHED);
+    
+    $result = $query->execute();
+
+    if (isset($result['node'])) {
+        $nids = array_keys($result['node']);
+        $build = node_load($nids[0]);
+        
+        foreach ($build->field_author['und'] as $item) {
+            $f = field_collection_item_load($item['value']);
+            $f->entity_id = $item['value'];                
+            $build->author[] = $f;
+        }        
+    }
+    return $build;
 }

@@ -1,15 +1,32 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
     <info>
-        <title>DDI Moving Forward: Object Description</title>
+        <title><?php print $build->field_release_title['und'][0]['safe_value'];?></title>
         <subtitle>
-            <markup><?php print date("Y-m-d");?></markup>
-        </subtitle>        
-        <author>
-            <orgname>the Data Documentation Initiative</orgname>
-        </author>
+            <?php print $build->field_subtitle['und'][0]['safe_value'];?>
+        </subtitle>
+        <annotation>
+            <para><?php print date("Y-m-d");?></para>
+        </annotation>
+        <releaseinfo>
+            <phrase>Version: <?php print $build->field_version_release['und'][0]['safe_value'];?></phrase>
+        </releaseinfo>
+        
+        <authorgroup>
+            <?php foreach($build->author as $author):?>
+            <author>
+                <personname><?php print $author->field_author_name['und'][0]['safe_value'];?></personname>
+                <affiliation>
+                    <org>
+                        <orgname><?php print $author->author[0]->field_organization['und'][0]['safe_value'];?></orgname>
+                    </org>
+                </affiliation>
+            </author>       
+            <?php endforeach;?>
+        </authorgroup>
+        
         <date><?php print date("Y-m-d");?></date>
         <legalnotice>
-            <para>Licence of all documentation is LGPL v3</para>
+            <para><?php print $build->field_legal_notice['und'][0]['safe_value'];?></para>
         </legalnotice>
     </info>
 
