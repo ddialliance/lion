@@ -17,7 +17,7 @@
                 <personname><?php print $author->field_author_name['und'][0]['safe_value'];?></personname>
                 <affiliation>
                     <org>
-                        <orgname><?php print $author->author[0]->field_organization['und'][0]['safe_value'];?></orgname>
+                        <orgname><?php print $author->field_organization['und'][0]['safe_value'];?></orgname>
                     </org>
                 </affiliation>
             </author>       

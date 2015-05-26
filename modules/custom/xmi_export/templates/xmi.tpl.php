@@ -168,7 +168,7 @@
                                         <tags/>
                                 </source>
                                 <target xmi:idref="<?php print $relation['name']; ?>">
-                                        <model ea_localid="1620" type="Class" name="?php print $relation['name']; ?>"/>
+                                        <model ea_localid="1620" type="Class" name="<?php print $relation['name']; ?>"/>
                                         <constraints/>
                                         <modifiers isNavigable="false"/>
                                         <style/>
