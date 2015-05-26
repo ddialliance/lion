@@ -9,6 +9,7 @@ define('DOCBOOK_HEADER', '<?xml version="1.0" encoding="UTF-8"?>
  */
 function docbook_export($package = null) {
     require_once('xmi_export.inc');
+    require_once('mapping.inc');
     
     $objects = get_all_node_objects($package);
     if($package != null){
@@ -20,9 +21,13 @@ function docbook_export($package = null) {
     }
     $build = _get_build_node();
     
+    $mappings = array();
+    $mappings["ddi3-2"] = get_mappings_array("ddi3-2");
+    $mappings["gsim"] = get_mappings_array("gsim");
+    
     header("Content-type: text/xml; charset=utf-8");
     print DOCBOOK_HEADER;
-    print theme('docbook', array('objects' => $objects, 'build' => $build));
+    print theme('docbook', array('objects' => $objects, 'mappings' => $mappings, 'build' => $build));
     exit(0);
 }
 
@@ -31,9 +36,17 @@ function docbook_export($package = null) {
  */
 function docbook_html() {
     require_once('xmi_export.inc');
+    require_once('mapping.inc');
+    
     $objects = get_all_node_objects();
 
-    $docbook = theme('docbook', array('objects' => $objects));
+    $build = _get_build_node();
+    
+    $mappings = array();
+    $mappings["ddi3-2"] = get_mappings_array("ddi3-2");
+    $mappings["gsim"] = get_mappings_array("gsim");
+    
+    $docbook = theme('docbook', array('objects' => $objects, 'mappings' => $mappings, 'build' => $build));
     $docbook = str_replace('xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"', '', $docbook);
 
     header("Content-type: text/xml; charset=utf-8");

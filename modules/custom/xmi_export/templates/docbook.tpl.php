@@ -160,7 +160,7 @@
                 <title>Relationships</title>
                 
                 <?php foreach($object['relationships'] as $item):?>
-                <section  xml:id="ddi4-<?php print $object['uuid']; ?>-relationships-<?php print $item['name']; ?>">
+                <section xml:id="ddi4-<?php print $object['uuid']; ?>-relationships-<?php print $item['name']; ?>">
                     <title><?php print $item['name'];?></title>
                     <informaltable frame="all">
                         <tgroup cols="2">
@@ -205,4 +205,49 @@
         <?php endforeach; ?>
     </chapter>
     <?php endforeach; ?>
+    <appendix>
+        <title>Mappings</title>
+        <section>
+            <title>GSIM</title>
+            <informaltable frame="all">
+                <tgroup cols="2">
+                    <colspec colname="c1" colnum="1" colwidth="5*"/>
+                    <colspec colname="c2" colnum="2" colwidth="5*"/>
+                    <tbody>
+                        <?php foreach($mappings["gsim"] as $key => $value): ?>
+                        <row>
+                            <entry><?php print $key; ?></entry>
+                            <entry>
+                                <?php foreach($value as $v): ?>
+                                <?php print $v . " "; ?>
+                                <?php endforeach;?>
+                            </entry>
+                        </row>
+                        <?php endforeach;?>
+                    </tbody>    
+                </tgroup>
+            </informaltable>
+        </section>
+        <section>
+            <title>DDI 3.2</title>
+            <informaltable frame="all">
+                <tgroup cols="2">
+                    <colspec colname="c1" colnum="1" colwidth="5*"/>
+                    <colspec colname="c2" colnum="2" colwidth="5*"/>
+                    <tbody>
+                        <?php foreach($mappings["ddi3-2"] as $key => $value): ?>
+                        <row>
+                            <entry><?php print $key; ?></entry>
+                            <entry>
+                                <?php foreach($value as $v): ?>
+                                <?php print $v . " "; ?>
+                                <?php endforeach;?>
+                            </entry>
+                        </row>
+                        <?php endforeach;?>
+                    </tbody>    
+                </tgroup>
+            </informaltable>
+        </section>
+    </appendix>
 </book>
