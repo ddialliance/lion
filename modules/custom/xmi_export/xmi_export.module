@@ -138,7 +138,7 @@ function xmi_export_theme() {
         ), 'docbook' => array(
             'path' => $path,
             'template' => 'docbook',
-            'variables' => array('objects' => NULL),
+            'variables' => array('objects' => NULL, 'build' => NULL),
         ), 'dot' => array(
             'path' => $path,
             'template' => 'dot',
