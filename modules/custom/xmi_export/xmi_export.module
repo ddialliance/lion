@@ -107,6 +107,15 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'mapping.inc',
     );
+    
+    $items['parentobjectproperties/%'] = array(
+        'title' => 'Parent objects',
+        'page callback' => 'get_parent_properties',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'xmi_export.inc',
+    );
 
 
     return $items;
@@ -189,4 +198,14 @@ function _diff_cleanup($field) {
     $subject = str_replace("| |", "", $subject);
 
     return $subject;
+}
+
+function xmi_export_node_view($node, $view_mode, $langcode) {
+    if($view_mode == "full" && $node->type == "ddiobject")
+    {
+        $js = 'jQuery(document).ready(function(){jQuery("<div id=\'parent_properties\'></div>")'
+                . '.insertAfter(".field-name-field-property .field-label"); '
+                . 'jQuery("#parent_properties").load("/parentobjectproperties/' . $node->nid . '")});';
+        drupal_add_js($js, "inline");
+    }
 }

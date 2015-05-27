@@ -245,6 +245,92 @@ function xmi_export_xmi($entityTitle = null, $type = "package") {
     exit(0);
 }
 
+function get_parent_properties($nid){
+
+    $parents = array();
+
+    _get_all_parents($nid, $parents);
+    
+    if(count($parents) == 0)
+        exit(0);
+    
+    foreach($parents as $parent)
+    {   
+        $node = node_load($parent);
+
+        if ($node->field_property) {
+            $node->PROPERTIES = array();
+            foreach ($node->field_property['und'] as $item) {
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];
+                $node->PROPERTIES[] = $f; 
+            }
+        }  
+        
+        if(count($node->PROPERTIES) == 0)
+            exit(0);
+        
+        $row_color = "odd";
+        
+        print "<br/><table class=\"sticky-enabled tableheader-processed sticky-table\" style=\"background-color:aliceblue;\">"
+                . "<thead>"
+                    . "<tr>Inherited from: " . $node->title . "</tr>"
+                    . "<tr>"
+                        . "<th class=\"field_property_name\">Name</th>"
+                        . "<th class=\"field_property_cardinality\">Cardinality</th>"
+                        . "<th class=\"field_property_datatype\">Datatype</th>"
+                        . "<th class=\"field_property_description_long\">Description</th>"
+                    . "</tr>"
+                . "</thead>"
+                . "<tbody>";
+                  
+        foreach($node->PROPERTIES as $property) 
+        {
+            $datatype_info = _get_reference_info($property->field_property_datatype);
+            
+            print "<tr class=\"field_collection_item " . $row_color . "\">"
+                    . "<td class=\"field_property_name\">"
+                        . "<div class=\"field field-name-field-property-name field-type-text field-label-hidden\">"
+                            . "<div class=\"field-items\">"
+                                . "<div class=\"field-item even\">" . _get_value($property->field_property_name) . "</div>"
+                            . "</div>"
+                        . "</div>"
+                    . "</td>"
+                    . "<td class=\"field_property_cardinality\">"
+                        . "<div class=\"field field-name-field-property-cardinality field-type-list-text field-label-hidden\">"
+                            . "<div class=\"field-items\">"
+                                . "<div class=\"field-item even\">" . _get_value($property->field_property_cardinality) . "</div>"
+                            . "</div>"
+                        . "</div>"
+                    . "</td>"
+                    . "<td class=\"field_property_datatype\">"
+                        . "<div class=\"field field-name-field-property-datatype field-type-entityreference field-label-hidden\">"
+                            . "<div class=\"field-items\">"
+                                . "<div class=\"field-item even\">"
+                                    . "<a href=\"/ddiobjects/" . $datatype_info["title"] . "\">" . $datatype_info["title"] . "</a>"
+                                . "</div>"
+                            . "</div>"
+                        . "</div>"
+                    . "</td>"
+                    . "<td class=\"field_property_description_long\">"
+                        . "<div class=\"field field-name-field-property-description-long field-type-text-long field-label-hidden\">"
+                            . "<div class=\"field-items\">"
+                                . "<div class=\"field-item even\">" . _get_value($property->field_property_description_long) . "</div>"
+                            . "</div>"
+                        . "</div>"
+                    . "</td>";
+            
+            if($row_color == "odd")
+                $row_color = "even";
+            else $row_color = "odd";
+        }
+        print "</tbody></table>";
+    }
+
+    print "<br/>Object properties";
+    exit(0);
+}
+
 /**
  * Restreucture the list to an nested array of packages
  * @param type $objects
@@ -465,4 +551,16 @@ function _escape_for_export($string){
 
 function _sort_by_weight_comparer($a, $b){
     return $a["weight"] > $b["weight"];
+}
+
+function _get_all_parents($nid, &$list){
+    $parent = db_query("SELECT field_extends_target_id
+                        FROM field_data_field_extends f
+                        WHERE entity_id = :nid", array(":nid" => $nid))->fetchField();
+    
+    if($parent == null)
+        return;
+    
+    $list[] = $parent;
+    _get_all_parents($parent, $list);
 }
