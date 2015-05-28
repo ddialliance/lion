@@ -178,12 +178,15 @@ function xmi_export_theme() {
         ), 'dot' => array(
             'path' => $path,
             'template' => 'dot',
-            'variables' => array('dot' => NULL)
-            
+            'variables' => array('dot' => NULL)            
         ), 'dot.graph' => array(
             'path' => $path,
             'template' => 'dot.graph',
             'variables' => array('data' => NULL)
+        ), 'parent_properties' => array(
+            'path' => $path,
+            'template' => 'parent_properties',
+            'variables' => array('title' => NULL, 'properties' => NULL)
     ));
 }
 
