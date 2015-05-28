@@ -268,7 +268,7 @@ function get_parent_properties($nid){
         }  
         
         if(count($node->PROPERTIES) == 0)
-            exit(0);
+            continue;
         
         $properties = array();
         foreach($node->PROPERTIES as $property)
@@ -292,6 +292,58 @@ function get_parent_properties($nid){
     print "<br/>Object properties";
     exit(0);
 }
+
+function get_parent_relationships($nid){
+
+    $parents = array();
+
+    _get_all_parents($nid, $parents);
+    
+    if(count($parents) == 0)
+        exit(0);
+    
+    foreach($parents as $parent)
+    {   
+        $node = node_load($parent);
+
+        if ($node->field_relationship) {
+            $node->RELATIONSHIP = array();
+            foreach ($node->field_relationship['und'] as $item) {
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];                
+                $node->RELATIONSHIP[] = $f;
+            }
+        } 
+        
+        if(count($node->RELATIONSHIP) == 0)
+            continue;
+        
+        $relationships = array();
+        foreach($node->RELATIONSHIP as $relationship)
+        {      
+            $target_object = _get_reference_info($relationship->field_relationship_target_object);            
+                        
+            $p = array();
+            $p["name"] = _get_value($relationship->field_relationship_name);
+            $p["target_object"] = $target_object["title"];
+            $p["source_cardinality"] = _get_value($relationship->field_relationship_source_cardin);
+            $p["target_cardinality"] = _get_value($relationship->field_relationship_target_cardin);
+            $p["description"] = _get_value($relationship->field_relationship_description_l);
+            $p["relationship_type"] = _get_value($relationship->field_relationship_type);
+           
+            $relationships[] = $p;
+        }
+        
+        print theme('parent_relationships', array(
+                        'title' => $node->title, 
+                        'relationships' => $relationships
+                    ));        
+    }
+    
+    print "<br/>Object relationships";
+    exit(0);
+}
+
 
 /**
  * Restreucture the list to an nested array of packages
