@@ -4,6 +4,14 @@
  * Implementation of hook_menu().
  */
 function xmi_export_menu() {
+    $items['sphinx'] = array(
+        'title' => 'Testpage for Sphinx doc',
+        'page callback' => 'sphinx_page',
+        'access arguments' => array('administer modules'),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'sphinx.inc',
+    );
+    
     $items['xmi-export'] = array(
         'title' => 'Testpage for Export XMI',
         'page callback' => 'xmi_export_page',
@@ -199,6 +207,10 @@ function xmi_export_theme() {
             'path' => $path,
             'template' => 'parent_relationships',
             'variables' => array('title' => NULL, 'relationships' => NULL)
+        ), 'sphinx.object' => array(
+            'path' => $path,
+            'template' => 'sphinx.object',
+            'variables' => array('object' => NULL)
     ));
 }
 
