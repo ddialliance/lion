@@ -57,6 +57,33 @@ function xmi_export_menu() {
     );
 
     /* Graph */
+    $items['graph'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_index',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );
+        
+    $items['graph/%/%/%'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_page',
+        'access arguments' => array('access content'),
+        'page arguments' => array(1, 2, 3),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );
+ 
+    $items['graph/%/%'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_page',
+        'access arguments' => array('access content'),
+        'page arguments' => array(1, 2),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );          
+    
+    /* Old graph */
     $items['package/%/dot.txt'] = array(
         'title' => 'DOT dump per package',
         'page callback' => 'dot_package_export',
@@ -152,6 +179,11 @@ function xmi_export_theme() {
             'path' => $path,
             'template' => 'dot',
             'variables' => array('dot' => NULL)
+            
+        ), 'dot.graph' => array(
+            'path' => $path,
+            'template' => 'dot.graph',
+            'variables' => array('data' => NULL)
     ));
 }
 
