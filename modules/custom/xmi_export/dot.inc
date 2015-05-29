@@ -16,6 +16,52 @@ function graph_index(){
     return $output;
 }
 
+function store_dot_files(){
+    set_time_limit (800);
+    $dot_dir = drupal_realpath('public://').'/dot-graphs/';
+    drupal_mkdir($dot_dir);
+    
+    $packages = get_all_node_objects();
+    
+    foreach($packages as $packageName => $package){
+        drupal_mkdir($dot_dir.$packageName);
+        foreach($package as $objectName => $object){
+            $package_dot = generate_dot_for_package($package);
+            file_put_contents($dot_dir.$packageName.'/'.$packageName.'.dot', $package_dot);
+            if(is_array($object)){
+                $object_dot = generate_dot_for_object($objectName);
+                $file_path = $dot_dir.$packageName.'/'.$objectName.'.dot';
+                file_put_contents($file_path, $object_dot);
+            }
+        }
+    }
+}
+
+function graph_url_list($type, $slug = NULL){
+    /*
+    header("Content-Type: text/plain");
+    $urls = array();
+    if($type == 'package' && $slug == NULL){
+        $packages = get_all_packages();
+        foreach($packages as $packageName => $package){
+            $urls[] = $GLOBALS['base_url'].'/graph/dot/'.$packageName;
+        }
+    }else if($type == 'package' && !empty($slug)){
+        $packages = get_all_node_objects();
+        foreach($packages as $packageName => $objects){
+            foreach($objects as $objectName => $object){
+                if(strtolower($packageName) == strtolower($slug)){
+                    $urls[] = $GLOBALS['base_url'].'/graph/dot/'.$packageName.'/'.$objectName;
+                }
+            }
+        }
+    }
+    print implode("\n", $urls);
+    exit(0);
+     */
+    store_dot_files();
+    return "rest";
+}
 
 function graph_page($format, $package, $object = null){
     $graph = '';

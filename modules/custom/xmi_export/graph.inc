@@ -25,18 +25,6 @@ function dot_package_export($package) {
 }
 
 function dot_package_export_image($package, $format) {
-    $graph = _generate_dot($package);
-
-    $output = graphviz_filter_filterproc('
-        /*
-         * @formats = ' . $format . '
-         * @imagemap = true
-         *
-         */' . $graph
-    );
-
-    $regex = '/https?\:\/\/[^\" ]+/i';
-    preg_match_all($regex, $output, $matches);
     switch ($format) {
         case "png":
             header("Content-Type: image/png");
@@ -49,6 +37,20 @@ function dot_package_export_image($package, $format) {
             header("Content-Type: image/svg+xml");
             $format = "svg";
     }
+    
+    $graph = _generate_dot($package);
+
+    $output = graphviz_filter_filterproc('
+        /*
+         * @formats = ' . $format . '
+         * @imagemap = true
+         *
+         */' . $graph
+    );
+
+    $regex = '/https?\:\/\/[^\" ]+/i';
+    preg_match_all($regex, $output, $matches);
+
 
     foreach ($matches[0] as $url) {
         if (substr($url, -8) === ".out." . $format) {
@@ -104,41 +106,42 @@ function entity_graph($entityTitle) {
     return "";
 }
 
+
+
 function _generate_dot_graph($objects) {
     $output .= 'digraph ddi4 {
-        rankdir = "LR";
-        layout=dot;
-        overlap=false; //false, compress, ...
-        sep=true;
-        compound=true;
+    rankdir = "LR";
+    layout=dot;
+    overlap=false; //false, compress, ...
+    sep=true;
+    compound=true;
 
-        graph [
-            fontname = "helvetica"
-        ];
+    graph [
+        fontname = "helvetica"
+    ];
 
-        node [
-            fillcolor= "gray"
-            fontname = "helvetica"
-            fontsize = "12"
-            shape = "record"
-            align = "left"
-            mindist=0.5
-        ];
-        
-        edge [
-            fontname = "helvetica"
-            fontsize = "10"
-            minlen=1
-            mode="ipsep"
-        ];
+    node [
+        fillcolor= "gray"
+        fontname = "helvetica"
+        fontsize = "12"
+        shape = "record"
+        align = "left"
+        mindist=0.5
+    ];
+
+    edge [
+        fontname = "helvetica"
+        fontsize = "10"
+        minlen=1
+        mode="ipsep"
+    ];
 ';
 
     $prefix = 'DDI_';
 
     //Classes 
     foreach ($objects as $package => $classes) {
-        $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
-        $package_color = '#' . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)];
+        $package_color = _generate_random_color();
 
         foreach ($classes as $class) {
             if (is_array($class)) {
@@ -168,7 +171,9 @@ function _generate_dot_graph($objects) {
                 }
                 $properties .= ' \l ';
 
-                $output .= "\t" . $prefix . $class['name'] . ' [tooltip="' . $class['package'] . ':' . $class['name'] . '" href="' . $base_url . '/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
+                $output .= "\t" . $prefix . $class['name'] . " [\n". 
+                        'tooltip="' . $class['package'] . ':' . $class['name'] . '"'. "\n".
+                        'href="' . $base_url . '/ddiobjects/' . $class['name'] . '" label="<id> ' . $class['name'] . $properties . '" shape = "record" fillcolor="white" color="' . $package_color . '"];' . "\n";
             }
         }
     }
@@ -235,6 +240,7 @@ function _generate_dot_graph($objects) {
     return $output;
 }
 
-function _object_to_dot($object) {
-    
+function _generate_random_color(){
+    $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+    return '#' . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)] . $rand[rand(0, 15)];
 }

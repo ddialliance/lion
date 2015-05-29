@@ -46,6 +46,15 @@ function validate_objects(){
 function validate_object($object){
     $invalidPackages = array("Review", "Toss", "Keep", "Deleted");
     
+    //check the object name for dublicates
+    if (haveDuplicateName($object["name"])){
+        $object["errors"][] = "Dublicates:"; 
+        $types = getTypesNodes($object["name"]);
+        foreach($types as $type){
+            $object["errors"][] = "The name '".$object["name"]."' is used as type '".$type."'";  
+        }
+    } 
+    
     if(!empty($object["extends"])){
         $pack = getObjectsPackage($object["extends"]);
         if(in_array($pack, $invalidPackages)){
@@ -150,6 +159,8 @@ function starts_with_upper($str) {
     return mb_strtolower($chr, "UTF-8") != $chr;
 }
 
+
+
 function getObjectsPackage($title){
     
     $result = db_query("SELECT title FROM field_data_field_package fp
@@ -159,4 +170,42 @@ function getObjectsPackage($title){
 
     return $result->fetchField();
 
+}
+
+function getTypesNodes($title){
+    
+    $result = db_query("SELECT type FROM node
+                            WHERE title = :title", array(":title"=> $title)); 
+    
+    $types = array();
+    while($p = $result->fetchField()){
+        $types[] = $p;
+    }
+    return $types;
+
+}
+
+function haveDuplicateName($name){
+    if(in_array($name, getDublicateNodes())){
+        
+        return 1; 
+    } 
+       else {
+       return false;
+       
+       }
+}
+
+function getDublicateNodes()
+    {
+    $result = db_query("SELECT title FROM node group by title having count(*) > 1");   
+    
+    $dublicates = array();
+    while($p = $result->fetchField()){
+        //dsm($p);
+        $dublicates[] = $p;
+    }
+
+    return $dublicates;
+    
 }

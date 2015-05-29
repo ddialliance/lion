@@ -35,3 +35,7 @@ Properties
 <?php endif;?>
 
 
+Graph
+=====
+
+.. graphviz:: /images/graph/<?php print $object['package']; ?>/<?php print $object['name'];?>.dot

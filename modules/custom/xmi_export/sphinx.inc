@@ -3,7 +3,7 @@ include('xmi_export.inc');
 
 function sphinx_page(){
     generateFolders();
-    return "build test";
+    return "sphinx built";
 }
 
 function generateFolders(){

@@ -89,7 +89,26 @@ function xmi_export_menu() {
         'page arguments' => array(1, 2),
         'type' => MENU_CALLBACK,
         'file' => 'dot.inc',
-    );          
+    );
+    
+    /* url-lists for the graphs */
+    $items['graph/url-list/%'] = array(
+        'title' => 'graph url list',
+        'page callback' => 'graph_url_list',
+        'access arguments' => array('access content'),
+        'page arguments' => array(2),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );
+    
+    $items['graph/url-list/%/%'] = array(
+        'title' => 'graph url list',
+        'page callback' => 'graph_url_list',
+        'access arguments' => array('access content'),
+        'page arguments' => array(2, 3),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );    
     
     /* Old graph */
     $items['package/%/dot.txt'] = array(

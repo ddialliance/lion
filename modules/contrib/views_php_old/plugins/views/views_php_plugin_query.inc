@@ -16,8 +16,6 @@ class views_php_plugin_query extends views_php_plugin_wrapper {
 
     $this->wrapped->execute($view);
 
-    // We cannot unwrap here because we need to run the pre_render functions.
-    // See: views_php_plugin_pager::pre_render()
-    //$pager->php_unwrap();
+    $pager->php_unwrap();
   }
 }
