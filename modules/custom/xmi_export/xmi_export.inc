@@ -494,6 +494,24 @@ function _get_reference_title($field){
     return $result;
 }
 
+function _get_node_body($title){
+    $query = new EntityFieldQuery();
+
+    $entities = $query->entityCondition('entity_type', 'node')
+                ->propertyCondition('title', $title)
+                ->propertyCondition('status', 1)
+                ->range(0,1)
+                ->execute();
+
+    if (!empty($entities['node'])) {
+        $node = node_load(array_shift(array_keys($entities['node'])));
+
+        return $node->body['und'][0]['value'];
+    }else{
+        return "";
+    }
+}
+
 /**
  * Helper function to get title and uuid for a referenced object
  * @param type $field

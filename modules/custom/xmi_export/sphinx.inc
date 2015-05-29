@@ -30,41 +30,46 @@ function generateFolders(){
 
 
 function createSphinxIndex(){
-$output =
-'=================================================
-DDI4
-=================================================
-.. image:: ddi-logo.*
-Contents
-
-.. toctree::
-   :maxdepth: 2
-
-';
-$packages = get_all_packages();
-foreach($packages as $packageName => $package){
-    $output .= '   '.$packageName.'/index.rst'."\n";
-}
-return $output;
+    $output =
+        "====\n".
+        "DDI4\n".
+        "====\n".
+        "\n".
+        ".. image:: /images/ddi-logo.*\n".
+        "\n".
+        "Contents\n".
+        "\n".
+        ".. toctree::\n".
+        "   :maxdepth: 2\n";
+    $packages = get_all_packages();
+    foreach($packages as $packageName => $package){
+        $output .= '   '.$packageName.'/index.rst'."\n";
+    }
+    return $output;
 }
 
 function createPackageIndex($package){
-$output =
-'********************************************
-'.$package['name'].'
-********************************************
+    $output = _heading($package['name'], '*', true)."\n".
+                _get_node_body($package['name'])."\n".
+                "Contents \n".
+                "\n".
+                ".. toctree::\n".
+                "   :maxdepth: 2\n".
+                "\n";    
+    foreach($package as $objectName => $object){
 
-Contents
-
-.. toctree::
-   :maxdepth: 2
-
-';    
-foreach($package as $objectName => $object){
-
-    if(is_array($object)){
-        $output .= '   '.$objectName."\n";
+        if(is_array($object)){
+            $output .= '   '.$objectName."\n";
+        }
     }
+    return $output;
 }
-return $output;
+
+function _heading($heading, $c, $double=false){
+    $output = '';
+    if($double){
+        $output = str_pad($c, strlen($heading), $c)."\n";
+    }
+    $output .= $heading."\n".str_pad($c, strlen($heading), $c);
+    return $output;
 }
