@@ -55,7 +55,7 @@ function get_all_node_objects($entityTitle = null, $type = "package") {
                                     ':status' => 1,
                                 ));
         }
-        
+            
         $objects = get_nodes($result);
 
         if($type == "package"){
@@ -87,11 +87,26 @@ function get_all_packages(){
                         ));    
     $packages = array();
     while($p = $result->fetchAssoc()){
-        $packages[] = $p;
+        $packages[$p["name"]] = $p;
     }
+    
+    //sort objects by weight
+    foreach($packages as &$p)
+    {
+        $weight_result = db_query("SELECT field_weight_value
+                                         FROM field_data_field_weight f
+                                         WHERE entity_id = :nid", array(":nid" => $p["nid"]))->fetchField();
+        if(!empty($weight_result)){
+            $p["weight"] = $weight_result;
+        }
+        else{
+            $p["weight"] = 100;
+        }
+    } 
+    uasort($packages, "_sort_by_weight_comparer");
+    
     return $packages;
 }
-
 
 function get_all_views(){
     $query = new EntityFieldQuery();
@@ -123,11 +138,26 @@ function get_all_views(){
                 
                 $view['objects'][$objName] = array('name' => $objName);
             }
-        }
-        
+        }       
         
         $views[$node->title] = $view;
     }
+    
+    //sort objects by weight
+    foreach($views as &$v)
+    {
+        $weight_result = db_query("SELECT field_weight_value
+                                         FROM field_data_field_weight f
+                                         WHERE entity_id = :nid", array(":nid" => $v["nid"]))->fetchField();
+        if(!empty($weight_result)){
+            $v["weight"] = $weight_result;
+        }
+        else{
+            $v["weight"] = 100;
+        }
+    } 
+    uasort($views, "_sort_by_weight_comparer");
+    
     return $views;
 }
 
@@ -215,20 +245,122 @@ function xmi_export_xmi($entityTitle = null, $type = "package") {
     exit(0);
 }
 
+function get_parent_properties($nid){
+
+    $parents = array();
+
+    _get_all_parents($nid, $parents);
+    
+    if(count($parents) == 0)
+        exit(0);
+    
+    foreach($parents as $parent)
+    {   
+        $node = node_load($parent);
+
+        if ($node->field_property) {
+            $node->PROPERTIES = array();
+            foreach ($node->field_property['und'] as $item) {
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];
+                $node->PROPERTIES[] = $f; 
+            }
+        }  
+        
+        if(count($node->PROPERTIES) == 0)
+            continue;
+        
+        $properties = array();
+        foreach($node->PROPERTIES as $property)
+        {
+            $datatype_info = _get_reference_info($property->field_property_datatype);
+            
+            $p = array();
+            $p["name"] = _get_value($property->field_property_name);
+            $p["cardinality"] = _get_value($property->field_property_cardinality);
+            $p["datatype"] = $datatype_info["title"];
+            $p["description"] = _get_value($property->field_property_description_long);
+            $properties[] = $p;
+        }
+        
+        print theme('parent_properties', array(
+                        'title' => $node->title, 
+                        'properties' => $properties
+                    ));        
+    }
+
+    print "<br/>Object properties";
+    exit(0);
+}
+
+function get_parent_relationships($nid){
+
+    $parents = array();
+
+    _get_all_parents($nid, $parents);
+    
+    if(count($parents) == 0)
+        exit(0);
+    
+    foreach($parents as $parent)
+    {   
+        $node = node_load($parent);
+
+        if ($node->field_relationship) {
+            $node->RELATIONSHIP = array();
+            foreach ($node->field_relationship['und'] as $item) {
+                $f = field_collection_item_load($item['value']);
+                $f->entity_id = $item['value'];                
+                $node->RELATIONSHIP[] = $f;
+            }
+        } 
+        
+        if(count($node->RELATIONSHIP) == 0)
+            continue;
+        
+        $relationships = array();
+        foreach($node->RELATIONSHIP as $relationship)
+        {      
+            $target_object = _get_reference_info($relationship->field_relationship_target_object);            
+                        
+            $p = array();
+            $p["name"] = _get_value($relationship->field_relationship_name);
+            $p["target_object"] = $target_object["title"];
+            $p["source_cardinality"] = _get_value($relationship->field_relationship_source_cardin);
+            $p["target_cardinality"] = _get_value($relationship->field_relationship_target_cardin);
+            $p["description"] = _get_value($relationship->field_relationship_description_l);
+            $p["relationship_type"] = _get_value($relationship->field_relationship_type);
+           
+            $relationships[] = $p;
+        }
+        
+        print theme('parent_relationships', array(
+                        'title' => $node->title, 
+                        'relationships' => $relationships
+                    ));        
+    }
+    
+    print "<br/>Object relationships";
+    exit(0);
+}
+
+
 /**
  * Restreucture the list to an nested array of packages
  * @param type $objects
  * @return type
  */
 function _put_into_packages($objects){
-    $result = array();
+    
+    $result = get_all_packages();
+        
     foreach($objects as $object){
         $result[$object['package']][$object['name']] = $object;
     }
     foreach($result as &$ref){
         ksort($ref);
     }
-    ksort($result);
+    
     return $result;
 }
 
@@ -362,6 +494,24 @@ function _get_reference_title($field){
     return $result;
 }
 
+function _get_node_body($title){
+    $query = new EntityFieldQuery();
+
+    $entities = $query->entityCondition('entity_type', 'node')
+                ->propertyCondition('title', $title)
+                ->propertyCondition('status', 1)
+                ->range(0,1)
+                ->execute();
+
+    if (!empty($entities['node'])) {
+        $node = node_load(array_shift(array_keys($entities['node'])));
+
+        return $node->body['und'][0]['value'];
+    }else{
+        return "";
+    }
+}
+
 /**
  * Helper function to get title and uuid for a referenced object
  * @param type $field
@@ -429,4 +579,20 @@ function _render_datatype($type){
 function _escape_for_export($string){
     $string = str_replace(':', '_', $string);
     return $string;
+}
+
+function _sort_by_weight_comparer($a, $b){
+    return $a["weight"] > $b["weight"];
+}
+
+function _get_all_parents($nid, &$list){
+    $parent = db_query("SELECT field_extends_target_id
+                        FROM field_data_field_extends f
+                        WHERE entity_id = :nid", array(":nid" => $nid))->fetchField();
+    
+    if($parent == null)
+        return;
+    
+    $list[] = $parent;
+    _get_all_parents($parent, $list);
 }

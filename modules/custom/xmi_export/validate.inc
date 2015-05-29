@@ -10,12 +10,15 @@ function issues_page(){
     foreach($objects as $package => $objs){
         foreach($objs as $object){
             $total++;
-            if(array_key_exists("errors", $object)){
-                $errors++;
+            if(is_array($object))
+            {
+                if(array_key_exists("errors", $object)){
+                    $errors++;
+                }
+                if(array_key_exists("warnings", $object)){
+                    $warnings++;
+                }
             }
-            if(array_key_exists("warnings", $object)){
-                $warnings++;
-            }            
         }
     }
     
@@ -31,7 +34,10 @@ function validate_objects(){
     
     foreach($objects as $package => &$objs){
         foreach($objs as &$object){
-            $object = validate_object($object);
+            if(is_array(($object)))
+            {
+                $object = validate_object($object);
+            }
         }
     }
     return $objects;

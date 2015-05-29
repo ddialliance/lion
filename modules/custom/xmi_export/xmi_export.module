@@ -4,6 +4,14 @@
  * Implementation of hook_menu().
  */
 function xmi_export_menu() {
+    $items['sphinx'] = array(
+        'title' => 'Testpage for Sphinx doc',
+        'page callback' => 'sphinx_page',
+        'access arguments' => array('administer modules'),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'sphinx.inc',
+    );
+    
     $items['xmi-export'] = array(
         'title' => 'Testpage for Export XMI',
         'page callback' => 'xmi_export_page',
@@ -57,6 +65,33 @@ function xmi_export_menu() {
     );
 
     /* Graph */
+    $items['graph'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_index',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );
+        
+    $items['graph/%/%/%'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_page',
+        'access arguments' => array('access content'),
+        'page arguments' => array(1, 2, 3),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );
+ 
+    $items['graph/%/%'] = array(
+        'title' => 'generate graph',
+        'page callback' => 'graph_page',
+        'access arguments' => array('access content'),
+        'page arguments' => array(1, 2),
+        'type' => MENU_CALLBACK,
+        'file' => 'dot.inc',
+    );          
+    
+    /* Old graph */
     $items['package/%/dot.txt'] = array(
         'title' => 'DOT dump per package',
         'page callback' => 'dot_package_export',
@@ -107,7 +142,24 @@ function xmi_export_menu() {
         'type' => MENU_CALLBACK,
         'file' => 'mapping.inc',
     );
+    
+    $items['parentobjectproperties/%'] = array(
+        'title' => 'Parent properties',
+        'page callback' => 'get_parent_properties',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'xmi_export.inc',
+    );
 
+    $items['parentobjectrelationships/%'] = array(
+        'title' => 'Parent relationships',
+        'page callback' => 'get_parent_relationships',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'xmi_export.inc',
+    );
 
     return $items;
 }
@@ -138,11 +190,27 @@ function xmi_export_theme() {
         ), 'docbook' => array(
             'path' => $path,
             'template' => 'docbook',
-            'variables' => array('objects' => NULL),
+            'variables' => array('objects' => NULL, 'build' => NULL),
         ), 'dot' => array(
             'path' => $path,
             'template' => 'dot',
-            'variables' => array('dot' => NULL)
+            'variables' => array('dot' => NULL)            
+        ), 'dot.graph' => array(
+            'path' => $path,
+            'template' => 'dot.graph',
+            'variables' => array('data' => NULL)
+        ), 'parent_properties' => array(
+            'path' => $path,
+            'template' => 'parent_properties',
+            'variables' => array('title' => NULL, 'properties' => NULL)
+        ), 'parent_relationships' => array(
+            'path' => $path,
+            'template' => 'parent_relationships',
+            'variables' => array('title' => NULL, 'relationships' => NULL)
+        ), 'sphinx.object' => array(
+            'path' => $path,
+            'template' => 'sphinx.object',
+            'variables' => array('object' => NULL)
     ));
 }
 
@@ -189,4 +257,19 @@ function _diff_cleanup($field) {
     $subject = str_replace("| |", "", $subject);
 
     return $subject;
+}
+
+function xmi_export_node_view($node, $view_mode, $langcode) {
+    if($view_mode == "full" && $node->type == "ddiobject")
+    {
+        $js_p = 'jQuery(document).ready(function(){jQuery("<div id=\'parent_properties\'></div>")'
+                . '.insertAfter(".field-name-field-property .field-label"); '
+                . 'jQuery("#parent_properties").load("/parentobjectproperties/' . $node->nid . '")});';
+        drupal_add_js($js_p, "inline");
+        
+        $js_r = 'jQuery(document).ready(function(){jQuery("<div id=\'parent_relationships\'></div>")'
+                . '.insertAfter(".field-name-field-relationship .field-label"); '
+                . 'jQuery("#parent_relationships").load("/parentobjectrelationships/' . $node->nid . '")});';
+        drupal_add_js($js_r, "inline");
+    }
 }
