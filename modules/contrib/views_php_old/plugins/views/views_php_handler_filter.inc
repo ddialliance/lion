@@ -74,21 +74,19 @@ class views_php_handler_filter extends views_handler_filter {
 
   /**
    *
-   * @see views_php_plugin_pager::render()
+   * @see views_php_views_post_execute()
    */
-  function php_pre_render() {
+  function php_post_execute() {
     // Evaluate the PHP code.
     if (!empty($this->options['php_filter'])) {
       $function = create_function('$view, $handler, &$static, $row, $data', $this->options['php_filter'] . ';');
       ob_start();
-
-      $normalized_row = new stdClass;
-      foreach ($this->view->result as $i => $result) {
-        foreach ($this->view->field as $id => $field) {
-          $normalized_row->$id = $this->view->field[$id]->theme($result);
+      foreach ($this->view->result as $i => $row) {
+        $normalized_row = new stdClass;
+        foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
+          $normalized_row->$field = isset($row->{$handler->field_alias}) ? $row->{$handler->field_alias} : NULL;
         }
-
-        if ($function($this->view, $this, $this->php_static_variable, $normalized_row, $result)) {
+        if ($function($this->view, $this, $this->php_static_variable, $normalized_row, $row)) {
           unset($this->view->result[$i]);
         }
       }
