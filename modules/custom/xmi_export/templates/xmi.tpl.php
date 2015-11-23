@@ -12,14 +12,16 @@
                     <?php if(array_key_exists($package, $datatypes)): ?>
                     <!-- Datatypes -->
                     <?php foreach($datatypes[$package] as $datatype): ?>
-                        <?php if(array_key_exists('enumeration', $datatype)): ?>
-                            <packagedElement xmi:type="uml:Enumeration" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>">
-                                <?php foreach($datatype['enumeration'] as $enumeration): ?>
-                                <ownedLiteral xmi:type="uml:EnumerationLiteral" name="<?php print $enumeration['value']; ?>"/>
-                                <?php endforeach; ?>
-                            </packagedElement>
-                        <?php else: ?>
-                            <packagedElement xmi:type="uml:DataType" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>"/>
+                        <?php if(is_array($datatype)):?>
+                            <?php if(array_key_exists('enumeration', $datatype)): ?>
+                                <packagedElement xmi:type="uml:Enumeration" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>">
+                                    <?php foreach($datatype['enumeration'] as $enumeration): ?>
+                                    <ownedLiteral xmi:type="uml:EnumerationLiteral" name="<?php print $enumeration['value']; ?>"/>
+                                    <?php endforeach; ?>
+                                </packagedElement>
+                            <?php else: ?>
+                                <packagedElement xmi:type="uml:DataType" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>"/>
+                            <?php endif;?>
                         <?php endif;?>
                     <?php endforeach; ?>
                     <!-- End Datatypes -->
@@ -99,6 +101,7 @@
             <!-- Objects -->
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
+            <?php if(is_array($object)):?>
             <element xmi:idref="<?php print $object['name'];?>" xmi:type="uml:Class" name="<?php print $object['name'];?>" scope="package">
                 <model package="<?php print $package;?>" tpos="0" ea_localid="<?php print $object['nid'];?>" ea_eleType="element"/>
                 <!-- the documentation in escaped html -->
@@ -148,13 +151,14 @@
                 </links>
                 <?php endif;?>
             </element>
+            <?php endif;?>
                 <?php endforeach;?>
             <?php endforeach;?>
         </elements>
         <connectors>
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <?php foreach ($ddiobjects as $object): ?>
-                    <?php if(count($object['relationships']) || $object['extends']):?>
+                    <?php if(is_array($object) && (count($object['relationships']) || $object['extends'])):?>
                         <?php if ($object['extends']): ?>
                             <!-- extends connector -->
                             <connector xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source">
@@ -214,18 +218,20 @@
             <!-- TODO: Generate a diagram for each package -->
             <?php $i = 1; ?>
             <?php foreach ($objects as $package => $ddiobjects): ?>
-            <diagram>
-                <model package="<?php print $package;?>" localID="<?php print $i;?>" owner="<?php print $package;?>"/>
-                <properties name="<?php print $package;?>" type="Logical"/>
-                <?php $i++;?>
-                <elements>
-                <?php $j = 1;?>
-                <?php foreach ($ddiobjects as $object): ?>
-                    <element subject="<?php print $object['name'];?>" seqno="<?php print $j;?>" />
-                    <?php $j++;?>
-                <?php endforeach;?>
-                </elements>
-            </diagram>
+                <?php if(is_array($object)):?>
+                <diagram>
+                    <model package="<?php print $package;?>" localID="<?php print $i;?>" owner="<?php print $package;?>"/>
+                    <properties name="<?php print $package;?>" type="Logical"/>
+                    <?php $i++;?>
+                    <elements>
+                    <?php $j = 1;?>
+                    <?php foreach ($ddiobjects as $object): ?>
+                        <element subject="<?php print $object['name'];?>" seqno="<?php print $j;?>" />
+                        <?php $j++;?>
+                    <?php endforeach;?>
+                    </elements>
+                </diagram>
+            <?php endif;?>
             <?php endforeach;?>
             <!-- TODO: Generate a diagram for each view -->
         </diagrams>
