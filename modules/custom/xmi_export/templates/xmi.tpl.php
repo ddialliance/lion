@@ -86,7 +86,11 @@
         <!-- DDI4 views -->
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_views" name="Views (Exported from Drupal)">
             <?php foreach($views as $view): ?>
-                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>"/>
+                <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>">
+					<ownedComment xmi:type="uml:Comment">
+						<body><?php if(array_key_exists('definition',$view)){print $view['definition'];} ?></body>
+					</ownedComment>
+				</packagedElement>
             <?php endforeach; ?>
         </packagedElement>
     </uml:Model>
@@ -204,7 +208,7 @@
             <?php foreach($views as $view): ?>
             <diagram xmi:id="<?php print $view['name'];?>Diagram">
              <model package="<?php print $view['name'];?>" owner="<?php print $view['name'];?>"/>
-             <properties name="<?php print $view['name'];?> Diagram"/>
+             <properties name="<?php print $view['name'];?> Diagram" documentation="<?php if(array_key_exists('definition',$view)){print nl2br($view['definition']);} ?>" />
              <elements>
                <?php $num = 0; ?>
                <?php foreach($view['objects'] as $object): ?>
