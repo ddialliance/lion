@@ -9,12 +9,18 @@
         <packagedElement xmi:type="uml:Package" xmi:id="ddi4_model" name="Class Model (Exported from Drupal)">
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <packagedElement xmi:type="uml:Package" xmi:id="<?php print $package; ?>" name="<?php print $package; ?>">
+					<ownedComment xmi:type="uml:Comment">
+						<body><?php if(array_key_exists('definition',$package)){print $package['definition'];} ?></body>
+					</ownedComment>
                     <?php if(array_key_exists($package, $datatypes)): ?>
                     <!-- Datatypes -->
                     <?php foreach($datatypes[$package] as $datatype): ?>
                         <?php if(is_array($datatype)):?>
                             <?php if(array_key_exists('enumeration', $datatype)): ?>
                                 <packagedElement xmi:type="uml:Enumeration" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>">
+									<ownedComment xmi:type="uml:Comment">
+										<body><?php if(array_key_exists('definition',$datatype)){print $datatype['definition'];} ?></body>
+									</ownedComment>
                                     <?php foreach($datatype['enumeration'] as $enumeration): ?>
                                     <ownedLiteral xmi:type="uml:EnumerationLiteral" name="<?php print $enumeration['value']; ?>"/>
                                     <?php endforeach; ?>
@@ -29,6 +35,9 @@
                     <?php foreach ($ddiobjects as $object): ?>
                         <?php if(is_array($object)):?>
                             <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
+								<ownedComment xmi:type="uml:Comment">
+									<body><?php if(array_key_exists('definition',$object)){print $object['definition'];} ?></body>
+								</ownedComment>
                                 <?php if ($object['extends']): ?>
                                     <!-- extends -->
                                     <generalization xmi:type="uml:Generalization" xmi:id="<?php print $object['name']; ?>_extends_<?php print $object['extends']; ?>" general="<?php print $object['extends']; ?>"/>
@@ -67,6 +76,9 @@
                                 <?php if ($relation['target_object']): ?>
                         <!-- <?php print str_replace('-', '',$object['name']); ?>.<?php print str_replace('-', '',$relation['name']); ?> -->
                                     <packagedElement xmi:type="uml:Association" xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" name="<?php print $relation['name']; ?>">
+										<ownedComment xmi:type="uml:Comment">
+											<body><?php if(array_key_exists('description',$relation)){print htmlspecialchars($relation['description'], ENT_QUOTES);} ?></body>
+										</ownedComment>
                                         <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_source"/>
                                         <memberEnd xmi:idref="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target"/>
                                         <ownedEnd xmi:id="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_target" xmi:type="uml:Property" association="<?php print $object['name']; ?>_<?php print $relation['name']; ?>_association" <?php if($relation['xmi_type'] != "none"):?> aggregation="<?php print $relation['xmi_type']; ?>"<?php endif;?>>
@@ -208,7 +220,7 @@
             <?php foreach($views as $view): ?>
             <diagram xmi:id="<?php print $view['name'];?>Diagram">
              <model package="<?php print $view['name'];?>" owner="<?php print $view['name'];?>"/>
-             <properties name="<?php print $view['name'];?> Diagram" documentation="<?php if(array_key_exists('definition',$view)){print nl2br($view['definition']);} ?>" />
+             <properties name="<?php print $view['name'];?> Diagram" />
              <elements>
                <?php $num = 0; ?>
                <?php foreach($view['objects'] as $object): ?>
