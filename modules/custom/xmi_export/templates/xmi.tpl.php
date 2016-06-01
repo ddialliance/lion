@@ -10,7 +10,7 @@
             <?php foreach ($objects as $package => $ddiobjects): ?>
                 <packagedElement xmi:type="uml:Package" xmi:id="<?php print $package; ?>" name="<?php print $package; ?>">
 					<ownedComment xmi:type="uml:Comment">
-						<body><?php if(array_key_exists('definition',$package)){print $package['definition'];} ?></body>
+						<body><?php if(array_key_exists('definition',$package)){print htmlspecialchars($package['definition']);} ?></body>
 					</ownedComment>
                     <?php if(array_key_exists($package, $datatypes)): ?>
                     <!-- Datatypes -->
@@ -19,7 +19,7 @@
                             <?php if(array_key_exists('enumeration', $datatype)): ?>
                                 <packagedElement xmi:type="uml:Enumeration" xmi:id="<?php print $datatype['name']; ?>" name="<?php print $datatype['name']; ?>">
 									<ownedComment xmi:type="uml:Comment">
-										<body><?php if(array_key_exists('definition',$datatype)){print $datatype['definition'];} ?></body>
+										<body><?php if(array_key_exists('definition',$datatype)){print htmlspecialchars($datatype['definition']);} ?></body>
 									</ownedComment>
                                     <?php foreach($datatype['enumeration'] as $enumeration): ?>
                                     <ownedLiteral xmi:type="uml:EnumerationLiteral" name="<?php print $enumeration['value']; ?>"/>
@@ -36,7 +36,7 @@
                         <?php if(is_array($object)):?>
                             <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
 								<ownedComment xmi:type="uml:Comment">
-									<body><?php if(array_key_exists('definition',$object)){print $object['definition'];} ?></body>
+									<body><?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition']);} ?></body>
 								</ownedComment>
                                 <?php if ($object['extends']): ?>
                                     <!-- extends -->
@@ -100,7 +100,7 @@
             <?php foreach($views as $view): ?>
                 <packagedElement xmi:type="uml:Package" xmi:id="<?php print $view['name'];?>" name="<?php print $view['name'];?>">
 					<ownedComment xmi:type="uml:Comment">
-						<body><?php if(array_key_exists('definition',$view)){print $view['definition'];} ?></body>
+						<body><?php if(array_key_exists('definition',$view)){print htmlspecialchars($view['definition']);} ?></body>
 					</ownedComment>
 				</packagedElement>
             <?php endforeach; ?>
