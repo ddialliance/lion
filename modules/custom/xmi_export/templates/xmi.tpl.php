@@ -37,34 +37,40 @@
                             <packagedElement xmi:type="uml:Class" name="<?php print $object['name']; ?>" xmi:id="<?php print $object['name']; ?>" visibility="package" <?php if($object['is_abstract']): ?>isAbstract="true"<?php endif;?>>
 								<ownedComment xmi:type="uml:Comment">
 									<body>
-Definition
-==========
+||Definition
+============
 <?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition']);} ?>
 |||
-Examples
-========
+
+||Examples
+==========
 <?php if(array_key_exists('example',$object)){print htmlspecialchars($object['example']);} ?>
 |||
-Explanatory notes
-=================
+
+||Explanatory notes
+===================
 <?php if(array_key_exists('explanatory_notes',$object)){print htmlspecialchars($object['explanatory_notes']);} ?>
 |||
-Synonyms
-========
+
+||Synonyms
+==========
 <?php if(array_key_exists('synonyms',$object)){print htmlspecialchars($object['synonyms']);} ?>
 |||
-DDI 3.2 mapping
-===============
+
+||DDI 3.2 mapping
+=================
 <?php if(array_key_exists('ddi_3_2',$object)){print htmlspecialchars($object['ddi_3_2']);} ?>
 |||
-RDF mapping
-===========
+
+||RDF mapping
+=============
 <?php foreach ($object['rdf'] as $item): ?>
 <?php if(array_key_exists('label',$item)){print htmlspecialchars($item['label']);} ?>; <?php if(array_key_exists('type',$item)){print htmlspecialchars($item['type']);} ?>; <?php if(array_key_exists('uri',$item)){print htmlspecialchars($item['uri']);} ?>
 <?php endforeach; ?>
 |||
-GSIM mapping
-============
+
+||GSIM mapping
+==============
 <?php if(array_key_exists('gsim',$object)){print htmlspecialchars($object['gsim']);} ?>
 |||
 									</body>
