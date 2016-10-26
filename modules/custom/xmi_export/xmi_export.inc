@@ -374,6 +374,7 @@ function node_to_xmi_array($node) {
     $xmi = array('definition' => "", 
                  'name' => "", 
                  'package' => "",
+                 'rdf' => array(),
                  'properties' => array(),
                  'relationships' => array(),
                  'is_abstract' => 'false'
@@ -385,6 +386,7 @@ function node_to_xmi_array($node) {
     $xmi['gsim'] = _get_value($node->field_gsim);
     $xmi['definition']  = _get_value($node->body);
     $xmi['example'] = _get_value($node->field_example);
+    $xmi['synonyms'] = _get_value($node->field_synonyms);
     $xmi['explanatory_notes'] = _get_value($node->field_explanatory_notes);
     
     $extends_info = _get_reference_info($node->field_extends);
@@ -395,6 +397,19 @@ function node_to_xmi_array($node) {
     $xmi['package'] = _get_reference_title($node->field_package);
     $xmi['uuid'] = $node->uuid;
     
+    if (property_exists($node, 'RDF_MAPPING')) {
+        if ($node->RDF_MAPPING) {
+            $xmi['rdf'] = array();
+            foreach ($node->RDF_MAPPING as $prop) {
+				$mapping = array('label'=>"", 'type'=>"", 'uri'=>"");
+                $mapping['label']           = _get_value($prop->field_rdf_mapping_label);
+                $mapping['type']           = _get_value($prop->field_rdf_mapping_type);
+                $mapping['uri']           = _get_value($prop->field_rdf_mapping_uri);
+				
+			}
+		}
+	}
+
     if (property_exists($node, 'PROPERTIES')) {
         if ($node->PROPERTIES) {
             $xmi['properties'] = array();
