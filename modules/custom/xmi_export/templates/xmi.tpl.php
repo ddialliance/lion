@@ -39,7 +39,7 @@
 									<body>
 Definition
 ==========
-<?php if(array_key_exists('definition',$datatype)){print htmlspecialchars($datatype['definition']);} ?>
+<?php if(array_key_exists('definition',$object)){print htmlspecialchars($object['definition']);} ?>
 |||
 Examples
 ========
