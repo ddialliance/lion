@@ -24,6 +24,8 @@ Custom modules include:
 ## [xmi_export](https://github.com/ddialliance/lion/tree/master/modules/custom/xmi_export)
 Used to get data from drupal and export it as XMI-XML.
 
+* [main entry point for menu routes](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/xmi_export.module#L6) defines the paths fo activate each function
+
 
 ## [ddi_model_import](https://github.com/ddialliance/lion/tree/master/modules/custom/ddi_model_import)
-
+Used to do the first import of DDI-L 3.x import of object. Did only run once in the early stages of DDI moving forward.
