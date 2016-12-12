@@ -1,7 +1,7 @@
 lion
 ====
 
-Drupal site and custom modules for modeling DDI
+Drupal site and custom modules for modeling DDI in the project [DDI Moving Forward](https://ddi-alliance.atlassian.net/wiki/pages/viewpage.action?pageId=491703)
 
 # Setup
 
