@@ -18,6 +18,18 @@ Drupal site and custom modules for modeling DDI in the project [DDI Moving Forwa
 
 6. Your local development instance should now run on http://localhost:8080
 
+# Development terminal
+
+To get an interactive shell for the container run: `docker exec -it lion_web_1 /bin/bash`
+
+In the terminal you can use [drush](https://drushcommands.com) to do various tasks.
+
+Some examples:
+
+* `drush cc all` clear all cache
+* `drush sql-query 'DELETE FROM cache;'` force clear all cache by deleting everything in the cache table
+* `drush ws` show latest log entries
+
 # Overview
 
 Custom modules include: 
