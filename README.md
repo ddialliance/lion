@@ -46,3 +46,6 @@ Functional overview:
 
 ## [ddi_model_import](https://github.com/ddialliance/lion/tree/master/modules/custom/ddi_model_import)
 Used to do the first import of DDI-L 3.x import of object. Did only run once in the early stages of DDI moving forward.
+
+# License
+[MIT](LICENSE.md)
