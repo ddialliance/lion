@@ -1,0 +1,25 @@
+version: '2'
+services:
+    web:
+        image: snd/drupal:7.50-apache
+        build: .
+        volumes:
+          #mount src to site directory
+          - ./:/var/www/html/sites/default
+        ports:
+          - 8080:80
+        depends_on:
+          - db-web
+    db-web:
+        image: mariadb:10
+        volumes:
+          #put your .sql dump in the data dir, mariadb will import it
+          - ./sql-dump:/docker-entrypoint-initdb.d
+        environment:
+          - MYSQL_ROOT_PASSWORD=s3cr3t
+          - MYSQL_DATABASE=drupal
+          - MYSQL_USER=drupal
+          - MYSQL_PASSWORD=trustno1
+          - TERM=dumb
+        ports:
+          - 3306:3306
