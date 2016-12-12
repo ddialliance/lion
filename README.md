@@ -9,7 +9,7 @@ Drupal site and custom modules for modeling DDI in the project [DDI Moving Forwa
 
 2. Clone this repository
 
-3. Get SQL-dump from a friendly developer and place it in `sql-dum`
+3. Get SQL-dump from a friendly developer and place it in `sql-dump`
 
 5. Copy `settings.example.php` to a file named `settings.php`.
    default username password can be used during local development (no changes needed), change it if you want to use this setup for a public server.
@@ -36,8 +36,13 @@ Custom modules include:
 ## [xmi_export](https://github.com/ddialliance/lion/tree/master/modules/custom/xmi_export)
 Used to get data from drupal and export it as XMI-XML.
 
-* [main entry point for menu routes](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/xmi_export.module#L6) defines the paths fo activate each function
+Functional overview:
 
+* [main entry point for menu routes](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/xmi_export.module#L6) defines the paths fo activate each function
+* [handle read from the database](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/xmi_export.inc)
+* [page callback for xmi file generation](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/xmi_export.inc#L215)
+* [validation checks of naming conventions and links to exluded packages](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/validate.inc)
+* [page callbakc for mappings overview DDI-L / GSIM](https://github.com/ddialliance/lion/blob/master/modules/custom/xmi_export/mapping.inc)
 
 ## [ddi_model_import](https://github.com/ddialliance/lion/tree/master/modules/custom/ddi_model_import)
 Used to do the first import of DDI-L 3.x import of object. Did only run once in the early stages of DDI moving forward.
