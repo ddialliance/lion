@@ -1,7 +1,7 @@
-lion
-====
+Lion -Capturing platform for the DDI4 model
+===========================================
 
-Drupal site and custom modules for modeling DDI in the project [DDI Moving Forward](https://ddi-alliance.atlassian.net/wiki/pages/viewpage.action?pageId=491703)
+Drupal 7 site and custom modules for modeling DDI4 in the project [DDI Moving Forward](https://ddi-alliance.atlassian.net/wiki/pages/viewpage.action?pageId=491703)
 
 # Setup
 
@@ -20,7 +20,7 @@ Drupal site and custom modules for modeling DDI in the project [DDI Moving Forwa
 
 # Development terminal
 
-To get an interactive shell for the container run: `docker exec -it lion_web_1 /bin/bash`
+To get an interactive shell for the container run: `docker exec -it lion_web_1 /bin/bash` (if your continer is named `lion_web_1`)
 
 In the terminal you can use [drush](https://drushcommands.com) to do various tasks.
 
