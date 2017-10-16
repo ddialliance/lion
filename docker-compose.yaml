@@ -1,7 +1,7 @@
 version: '2'
 services:
     web:
-        image: snd/drupal:7.50-apache
+        image: lion/drupal:7.56-apache
         build: .
         volumes:
           #mount src to site directory
