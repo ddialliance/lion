@@ -5,9 +5,6 @@
  * Search Autocomplete
  * Delete a form from Search Autocomplete form list.
  *
- * @authors
- * Miroslav Talenberg (Dominique CLAUSE) <http://www.axiomcafe.fr/contact>
- *
  * Sponsored by:
  * www.axiomcafe.fr
  */
@@ -56,7 +53,6 @@ function search_autocomplete_form_delete($form, &$form_state, $parent_fid, $fid)
  */
 function search_autocomplete_form_delete_submit($form, &$form_state) {
 
-  $ok = TRUE;
   $values = $form_state['values'];
   $fid = $values['fid'];
   $parent_fid = $values['parent_fid'];
@@ -69,7 +65,7 @@ function search_autocomplete_form_delete_submit($form, &$form_state) {
             ->execute();
   db_query('DELETE FROM {search_autocomplete_forms} WHERE fid = :fid', array(':fid' => $fid));
 
-  // Give a return to the user
+  // Give a return to the user.
   drupal_set_message(t("The form has been successfully deleted !"));
 
   $form_state['redirect'] = 'admin/config/search/search_autocomplete';
